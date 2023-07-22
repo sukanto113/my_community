@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:my_community/login/login_screen.dart';
+import 'package:my_community/app/community_app.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const CommunityApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: EasyLoading.init(),
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -31,7 +35,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const LoginScreen(),
     );
   }
 }
