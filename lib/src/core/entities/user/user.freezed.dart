@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$User {
   String get id => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
+  String? get profileImageUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserCopyWith<User> get copyWith => throw _privateConstructorUsedError;
@@ -28,7 +29,7 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call({String id, String phone});
+  $Res call({String id, String phone, String? profileImageUrl});
 }
 
 /// @nodoc
@@ -46,6 +47,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? id = null,
     Object? phone = null,
+    Object? profileImageUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -56,6 +58,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
+      profileImageUrl: freezed == profileImageUrl
+          ? _value.profileImageUrl
+          : profileImageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -66,7 +72,7 @@ abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$$_UserCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String phone});
+  $Res call({String id, String phone, String? profileImageUrl});
 }
 
 /// @nodoc
@@ -80,6 +86,7 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
   $Res call({
     Object? id = null,
     Object? phone = null,
+    Object? profileImageUrl = freezed,
   }) {
     return _then(_$_User(
       id: null == id
@@ -90,6 +97,10 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
+      profileImageUrl: freezed == profileImageUrl
+          ? _value.profileImageUrl
+          : profileImageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -97,16 +108,18 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
 /// @nodoc
 
 class _$_User implements _User {
-  const _$_User({required this.id, required this.phone});
+  const _$_User({required this.id, required this.phone, this.profileImageUrl});
 
   @override
   final String id;
   @override
   final String phone;
+  @override
+  final String? profileImageUrl;
 
   @override
   String toString() {
-    return 'User(id: $id, phone: $phone)';
+    return 'User(id: $id, phone: $phone, profileImageUrl: $profileImageUrl)';
   }
 
   @override
@@ -115,11 +128,13 @@ class _$_User implements _User {
         (other.runtimeType == runtimeType &&
             other is _$_User &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.phone, phone) || other.phone == phone));
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.profileImageUrl, profileImageUrl) ||
+                other.profileImageUrl == profileImageUrl));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, phone);
+  int get hashCode => Object.hash(runtimeType, id, phone, profileImageUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -129,13 +144,17 @@ class _$_User implements _User {
 }
 
 abstract class _User implements User {
-  const factory _User({required final String id, required final String phone}) =
-      _$_User;
+  const factory _User(
+      {required final String id,
+      required final String phone,
+      final String? profileImageUrl}) = _$_User;
 
   @override
   String get id;
   @override
   String get phone;
+  @override
+  String? get profileImageUrl;
   @override
   @JsonKey(ignore: true)
   _$$_UserCopyWith<_$_User> get copyWith => throw _privateConstructorUsedError;

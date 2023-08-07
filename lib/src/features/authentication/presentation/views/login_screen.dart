@@ -81,7 +81,7 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
                             ),
                           );
                     },
-                    child: const Text("Login"),
+                    child: const Text("Sing Up"),
                   );
                 },
               )
