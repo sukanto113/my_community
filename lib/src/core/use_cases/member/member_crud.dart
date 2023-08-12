@@ -1,6 +1,5 @@
-import 'package:my_community/src/core/repositories/member/dtos/member_add_dto.dart';
-
 import '../../entities/member/member.dart';
+import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
 
 class MemberCrud {
@@ -17,7 +16,7 @@ class MemberCrud {
     String? designation,
     String? profileImage,
   }) async {
-    memberRepo.addMember(MemberAddDto(
+    memberRepo.addMember(MemberCreateDto(
       phone: phone,
       communityId: communityId,
       name: name,

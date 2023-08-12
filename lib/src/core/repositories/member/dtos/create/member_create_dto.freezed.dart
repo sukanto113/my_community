@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'member_add_dto.dart';
+part of 'member_create_dto.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-MemberAddDto _$MemberAddDtoFromJson(Map<String, dynamic> json) {
+MemberCreateDto _$MemberCreateDtoFromJson(Map<String, dynamic> json) {
   return _MemberAddDto.fromJson(json);
 }
 
 /// @nodoc
-mixin _$MemberAddDto {
+mixin _$MemberCreateDto {
   String get phone => throw _privateConstructorUsedError;
   String get communityId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
@@ -29,15 +29,15 @@ mixin _$MemberAddDto {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $MemberAddDtoCopyWith<MemberAddDto> get copyWith =>
+  $MemberCreateDtoCopyWith<MemberCreateDto> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $MemberAddDtoCopyWith<$Res> {
-  factory $MemberAddDtoCopyWith(
-          MemberAddDto value, $Res Function(MemberAddDto) then) =
-      _$MemberAddDtoCopyWithImpl<$Res, MemberAddDto>;
+abstract class $MemberCreateDtoCopyWith<$Res> {
+  factory $MemberCreateDtoCopyWith(
+          MemberCreateDto value, $Res Function(MemberCreateDto) then) =
+      _$MemberCreateDtoCopyWithImpl<$Res, MemberCreateDto>;
   @useResult
   $Res call(
       {String phone,
@@ -49,9 +49,9 @@ abstract class $MemberAddDtoCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$MemberAddDtoCopyWithImpl<$Res, $Val extends MemberAddDto>
-    implements $MemberAddDtoCopyWith<$Res> {
-  _$MemberAddDtoCopyWithImpl(this._value, this._then);
+class _$MemberCreateDtoCopyWithImpl<$Res, $Val extends MemberCreateDto>
+    implements $MemberCreateDtoCopyWith<$Res> {
+  _$MemberCreateDtoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -99,7 +99,7 @@ class _$MemberAddDtoCopyWithImpl<$Res, $Val extends MemberAddDto>
 
 /// @nodoc
 abstract class _$$_MemberAddDtoCopyWith<$Res>
-    implements $MemberAddDtoCopyWith<$Res> {
+    implements $MemberCreateDtoCopyWith<$Res> {
   factory _$$_MemberAddDtoCopyWith(
           _$_MemberAddDto value, $Res Function(_$_MemberAddDto) then) =
       __$$_MemberAddDtoCopyWithImpl<$Res>;
@@ -116,7 +116,7 @@ abstract class _$$_MemberAddDtoCopyWith<$Res>
 
 /// @nodoc
 class __$$_MemberAddDtoCopyWithImpl<$Res>
-    extends _$MemberAddDtoCopyWithImpl<$Res, _$_MemberAddDto>
+    extends _$MemberCreateDtoCopyWithImpl<$Res, _$_MemberAddDto>
     implements _$$_MemberAddDtoCopyWith<$Res> {
   __$$_MemberAddDtoCopyWithImpl(
       _$_MemberAddDto _value, $Res Function(_$_MemberAddDto) _then)
@@ -190,14 +190,14 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MemberAddDto(phone: $phone, communityId: $communityId, name: $name, role: $role, designation: $designation, profileImage: $profileImage)';
+    return 'MemberCreateDto(phone: $phone, communityId: $communityId, name: $name, role: $role, designation: $designation, profileImage: $profileImage)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'MemberAddDto'))
+      ..add(DiagnosticsProperty('type', 'MemberCreateDto'))
       ..add(DiagnosticsProperty('phone', phone))
       ..add(DiagnosticsProperty('communityId', communityId))
       ..add(DiagnosticsProperty('name', name))
@@ -241,7 +241,7 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
   }
 }
 
-abstract class _MemberAddDto implements MemberAddDto {
+abstract class _MemberAddDto implements MemberCreateDto {
   const factory _MemberAddDto(
       {required final String phone,
       required final String communityId,

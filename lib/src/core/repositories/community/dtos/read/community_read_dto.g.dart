@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'community_get_dto.dart';
+part of 'community_read_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_CommunityGetDTO _$$_CommunityGetDTOFromJson(Map<String, dynamic> json) =>
-    _$_CommunityGetDTO(
+_$_CommunityReadDTO _$$_CommunityReadDTOFromJson(Map<String, dynamic> json) =>
+    _$_CommunityReadDTO(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
@@ -15,7 +15,7 @@ _$_CommunityGetDTO _$$_CommunityGetDTOFromJson(Map<String, dynamic> json) =>
       coverImage: json['coverImage'] as String?,
     );
 
-Map<String, dynamic> _$$_CommunityGetDTOToJson(_$_CommunityGetDTO instance) =>
+Map<String, dynamic> _$$_CommunityReadDTOToJson(_$_CommunityReadDTO instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

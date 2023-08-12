@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'member_add_dto.dart';
+part of 'member_create_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

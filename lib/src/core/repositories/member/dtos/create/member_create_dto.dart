@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'member_add_dto.freezed.dart';
-part 'member_add_dto.g.dart';
+part 'member_create_dto.freezed.dart';
+part 'member_create_dto.g.dart';
 
 @freezed
-class MemberAddDto with _$MemberAddDto {
-  const factory MemberAddDto({
+class MemberCreateDto with _$MemberCreateDto {
+  const factory MemberCreateDto({
     required String phone,
     required String communityId,
     required String name,
@@ -15,6 +15,6 @@ class MemberAddDto with _$MemberAddDto {
     String? profileImage,
   }) = _MemberAddDto;
 
-  factory MemberAddDto.fromJson(Map<String, dynamic> json) =>
-      _$MemberAddDtoFromJson(json);
+  factory MemberCreateDto.fromJson(Map<String, dynamic> json) =>
+      _$MemberCreateDtoFromJson(json);
 }

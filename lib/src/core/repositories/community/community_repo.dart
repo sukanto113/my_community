@@ -1,7 +1,6 @@
-import 'package:my_community/src/core/entities/community/community.dart';
-import 'package:my_community/src/core/repositories/community/dtos/community_create_dot.dart';
-import 'package:my_community/src/core/repositories/community/dtos/community_get_dto.dart';
-import 'package:my_community/src/core/repositories/community/dtos/community_update_dto.dart';
+import 'dtos/create/community_create_dot.dart';
+import 'dtos/read/community_read_dto.dart';
+import 'dtos/update/community_update_dto.dart';
 
 abstract class ICommunityRepo {
   /// returns Community Id.
@@ -9,5 +8,5 @@ abstract class ICommunityRepo {
 
   Future<void> update(CommunityUpdateDTO dto);
 
-  Future<Iterable<CommunityGetDTO>> getCommunitiesByUser(String userId);
+  Future<Iterable<CommunityReadDTO>> readCommunitiesByUser(String userId);
 }
