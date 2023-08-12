@@ -21,7 +21,7 @@ class CommunityCrud {
     final communityId = await communityRepo.create(
       CommunityCreateDTO(name: name),
     );
-    await memberRepo.addMember(MemberCreateDto(
+    memberRepo.addMember(MemberCreateDto(
       phone: user.phone,
       communityId: communityId,
       name: name,
