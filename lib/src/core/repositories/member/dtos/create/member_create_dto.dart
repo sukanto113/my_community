@@ -11,6 +11,7 @@ class MemberCreateDto with _$MemberCreateDto {
     required String communityId,
     required String name,
     required String role,
+    String? userId,
     String? designation,
     String? profileImage,
   }) = _MemberAddDto;

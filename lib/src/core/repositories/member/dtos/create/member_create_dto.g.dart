@@ -12,6 +12,7 @@ _$_MemberAddDto _$$_MemberAddDtoFromJson(Map<String, dynamic> json) =>
       communityId: json['communityId'] as String,
       name: json['name'] as String,
       role: json['role'] as String,
+      userId: json['userId'] as String?,
       designation: json['designation'] as String?,
       profileImage: json['profileImage'] as String?,
     );
@@ -22,6 +23,7 @@ Map<String, dynamic> _$$_MemberAddDtoToJson(_$_MemberAddDto instance) =>
       'communityId': instance.communityId,
       'name': instance.name,
       'role': instance.role,
+      'userId': instance.userId,
       'designation': instance.designation,
       'profileImage': instance.profileImage,
     };

@@ -8,6 +8,7 @@ import 'package:my_community/src/core/repositories/community/dtos/create/communi
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart';
 import 'package:my_community/src/core/repositories/member/member_repo.dart';
 import 'package:my_community/src/core/use_cases/community/community_crud.dart';
+import 'package:faker/faker.dart';
 
 @GenerateNiceMocks([
   MockSpec<ICommunityRepo>(),
@@ -16,54 +17,116 @@ import 'package:my_community/src/core/use_cases/community/community_crud.dart';
 ])
 import 'community_crud_test.mocks.dart';
 
+final facker = Faker();
+final aUser = User(
+  id: facker.randomGenerator.integer(1000).toString(),
+  phone: facker.phoneNumber.us(),
+  name: facker.person.name(),
+);
+final aCommunityName = facker.company.name();
+final aCommunityId = facker.randomGenerator.integer(1000).toString();
+
+late CommunityCrud sut;
+late MockICommunityRepo communityRepo;
+late MockIMemberRepo memberRepo;
+late MockIAuthRepo authRepo;
 void main() {
-  group('Community create', () {
-    const aUser = User(id: "1", phone: "+8801234567891");
-    const aCommunityName = "My Awsom Community";
-
-    late CommunityCrud sut;
-    late MockICommunityRepo communityRepo;
-    late MockIMemberRepo memberRepo;
-    late MockIAuthRepo authRepo;
-
-    setUp(() {
+  group('Community create with auth', () {
+    setUp(() async {
       communityRepo = MockICommunityRepo();
       memberRepo = MockIMemberRepo();
       authRepo = MockIAuthRepo();
 
       sut = CommunityCrud(communityRepo, memberRepo, authRepo);
-    });
-    test('should call community reop create with the name', () async {
-      when(authRepo.getCurrentUser()).thenAnswer(
-        (realInvocation) async => aUser,
-      );
 
-      await sut.create("My Awsom Community");
+      setupAuthWithAUser();
+    });
+
+    test('should create a community -B', () async {
+      await sut.create(aCommunityName);
+
+      verify(communityRepo.create(any)).called(1);
+    });
+
+    test('should create a community with the name -B.A', () async {
+      await sut.create(aCommunityName);
 
       verify(
         communityRepo.create(
-          argThat(equals(const CommunityCreateDTO(name: aCommunityName))),
+          argThat(
+            isA<CommunityCreateDTO>()
+                .having((p0) => p0.name, "name", aCommunityName),
+          ),
         ),
       ).called(1);
     });
 
-    test('should add user as admin to the community', () async {
-      when(authRepo.getCurrentUser()).thenAnswer(
-        (realInvocation) async => aUser,
-      );
-      when(communityRepo.create(any)).thenAnswer((realInvocation) async => "2");
+    test('should add a member -A', () async {
+      await sut.create(aCommunityName);
 
+      verify(memberRepo.addMember(any));
+    });
+
+    test('should add exactly one member -A.A', () async {
+      await sut.create(aCommunityName);
+
+      verify(memberRepo.addMember(any)).called(1);
+    });
+
+    test('should add user as member -A.B', () async {
       await sut.create(aCommunityName);
 
       verify(
         memberRepo.addMember(
           argThat(
             isA<MemberCreateDto>()
-                .having((e) => e.communityId, "communityId", "2")
-                .having((e) => e.role, "role", "admin"),
+                .having((p0) => p0.userId, "userId", aUser.id),
+          ),
+        ),
+      );
+    });
+
+    test('should add member with name same as user name -A.C', () async {
+      await sut.create(aCommunityName);
+
+      verify(
+        memberRepo.addMember(
+          argThat(isA<MemberCreateDto>()
+              .having((p0) => p0.name, "name", aUser.name)),
+        ),
+      );
+    });
+
+    test('should add user as admin to the community -A.D', () async {
+      await sut.create(aCommunityName);
+
+      verify(
+        memberRepo.addMember(
+          argThat(
+            isA<MemberCreateDto>().having((e) => e.role, "role", "admin"),
           ),
         ),
       ).called(1);
     });
+
+    test('should add a member to the community -(A&B).A', () async {
+      when(communityRepo.create(any))
+          .thenAnswer((realInvocation) async => aCommunityId);
+
+      await sut.create(aCommunityName);
+
+      verify(
+        memberRepo.addMember(
+          argThat(isA<MemberCreateDto>()
+              .having((p0) => p0.communityId, "communityId", aCommunityId)),
+        ),
+      );
+    });
   });
+}
+
+void setupAuthWithAUser() {
+  when(authRepo.getCurrentUser()).thenAnswer(
+    (realInvocation) async => aUser,
+  );
 }

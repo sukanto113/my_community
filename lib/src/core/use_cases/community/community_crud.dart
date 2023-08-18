@@ -24,9 +24,10 @@ class CommunityCrud {
     memberRepo.addMember(MemberCreateDto(
       phone: user.phone,
       communityId: communityId,
-      name: name,
+      name: user.name,
       role: MemberRole.admin.name,
       profileImage: user.profileImageUrl,
+      userId: user.id,
     ));
   }
 

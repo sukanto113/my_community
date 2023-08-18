@@ -24,6 +24,7 @@ mixin _$MemberCreateDto {
   String get communityId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
+  String? get userId => throw _privateConstructorUsedError;
   String? get designation => throw _privateConstructorUsedError;
   String? get profileImage => throw _privateConstructorUsedError;
 
@@ -44,6 +45,7 @@ abstract class $MemberCreateDtoCopyWith<$Res> {
       String communityId,
       String name,
       String role,
+      String? userId,
       String? designation,
       String? profileImage});
 }
@@ -65,6 +67,7 @@ class _$MemberCreateDtoCopyWithImpl<$Res, $Val extends MemberCreateDto>
     Object? communityId = null,
     Object? name = null,
     Object? role = null,
+    Object? userId = freezed,
     Object? designation = freezed,
     Object? profileImage = freezed,
   }) {
@@ -85,6 +88,10 @@ class _$MemberCreateDtoCopyWithImpl<$Res, $Val extends MemberCreateDto>
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
       designation: freezed == designation
           ? _value.designation
           : designation // ignore: cast_nullable_to_non_nullable
@@ -110,6 +117,7 @@ abstract class _$$_MemberAddDtoCopyWith<$Res>
       String communityId,
       String name,
       String role,
+      String? userId,
       String? designation,
       String? profileImage});
 }
@@ -129,6 +137,7 @@ class __$$_MemberAddDtoCopyWithImpl<$Res>
     Object? communityId = null,
     Object? name = null,
     Object? role = null,
+    Object? userId = freezed,
     Object? designation = freezed,
     Object? profileImage = freezed,
   }) {
@@ -149,6 +158,10 @@ class __$$_MemberAddDtoCopyWithImpl<$Res>
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
       designation: freezed == designation
           ? _value.designation
           : designation // ignore: cast_nullable_to_non_nullable
@@ -169,6 +182,7 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
       required this.communityId,
       required this.name,
       required this.role,
+      this.userId,
       this.designation,
       this.profileImage});
 
@@ -184,13 +198,15 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
   @override
   final String role;
   @override
+  final String? userId;
+  @override
   final String? designation;
   @override
   final String? profileImage;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'MemberCreateDto(phone: $phone, communityId: $communityId, name: $name, role: $role, designation: $designation, profileImage: $profileImage)';
+    return 'MemberCreateDto(phone: $phone, communityId: $communityId, name: $name, role: $role, userId: $userId, designation: $designation, profileImage: $profileImage)';
   }
 
   @override
@@ -202,6 +218,7 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
       ..add(DiagnosticsProperty('communityId', communityId))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('role', role))
+      ..add(DiagnosticsProperty('userId', userId))
       ..add(DiagnosticsProperty('designation', designation))
       ..add(DiagnosticsProperty('profileImage', profileImage));
   }
@@ -216,6 +233,7 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
                 other.communityId == communityId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.designation, designation) ||
                 other.designation == designation) &&
             (identical(other.profileImage, profileImage) ||
@@ -224,8 +242,8 @@ class _$_MemberAddDto with DiagnosticableTreeMixin implements _MemberAddDto {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, phone, communityId, name, role, designation, profileImage);
+  int get hashCode => Object.hash(runtimeType, phone, communityId, name, role,
+      userId, designation, profileImage);
 
   @JsonKey(ignore: true)
   @override
@@ -247,6 +265,7 @@ abstract class _MemberAddDto implements MemberCreateDto {
       required final String communityId,
       required final String name,
       required final String role,
+      final String? userId,
       final String? designation,
       final String? profileImage}) = _$_MemberAddDto;
 
@@ -261,6 +280,8 @@ abstract class _MemberAddDto implements MemberCreateDto {
   String get name;
   @override
   String get role;
+  @override
+  String? get userId;
   @override
   String? get designation;
   @override

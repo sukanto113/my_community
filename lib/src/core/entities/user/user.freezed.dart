@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$User {
   String get id => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   String? get profileImageUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -29,7 +30,7 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call({String id, String phone, String? profileImageUrl});
+  $Res call({String id, String phone, String name, String? profileImageUrl});
 }
 
 /// @nodoc
@@ -47,6 +48,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? id = null,
     Object? phone = null,
+    Object? name = null,
     Object? profileImageUrl = freezed,
   }) {
     return _then(_value.copyWith(
@@ -57,6 +59,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
@@ -72,7 +78,7 @@ abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$$_UserCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String phone, String? profileImageUrl});
+  $Res call({String id, String phone, String name, String? profileImageUrl});
 }
 
 /// @nodoc
@@ -86,6 +92,7 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
   $Res call({
     Object? id = null,
     Object? phone = null,
+    Object? name = null,
     Object? profileImageUrl = freezed,
   }) {
     return _then(_$_User(
@@ -96,6 +103,10 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       profileImageUrl: freezed == profileImageUrl
           ? _value.profileImageUrl
@@ -108,18 +119,24 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
 /// @nodoc
 
 class _$_User implements _User {
-  const _$_User({required this.id, required this.phone, this.profileImageUrl});
+  const _$_User(
+      {required this.id,
+      required this.phone,
+      required this.name,
+      this.profileImageUrl});
 
   @override
   final String id;
   @override
   final String phone;
   @override
+  final String name;
+  @override
   final String? profileImageUrl;
 
   @override
   String toString() {
-    return 'User(id: $id, phone: $phone, profileImageUrl: $profileImageUrl)';
+    return 'User(id: $id, phone: $phone, name: $name, profileImageUrl: $profileImageUrl)';
   }
 
   @override
@@ -129,12 +146,14 @@ class _$_User implements _User {
             other is _$_User &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
                 other.profileImageUrl == profileImageUrl));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, phone, profileImageUrl);
+  int get hashCode =>
+      Object.hash(runtimeType, id, phone, name, profileImageUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -147,12 +166,15 @@ abstract class _User implements User {
   const factory _User(
       {required final String id,
       required final String phone,
+      required final String name,
       final String? profileImageUrl}) = _$_User;
 
   @override
   String get id;
   @override
   String get phone;
+  @override
+  String get name;
   @override
   String? get profileImageUrl;
   @override
