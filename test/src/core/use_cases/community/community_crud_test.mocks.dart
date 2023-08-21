@@ -6,7 +6,6 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:my_community/src/core/entities/member/member.dart' as _i8;
 import 'package:my_community/src/core/entities/user/user.dart' as _i11;
 import 'package:my_community/src/core/repositories/auth/auth_repo.dart' as _i10;
 import 'package:my_community/src/core/repositories/community/community_repo.dart'
@@ -19,6 +18,8 @@ import 'package:my_community/src/core/repositories/community/dtos/update/communi
     as _i5;
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart'
     as _i9;
+import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart'
+    as _i8;
 import 'package:my_community/src/core/repositories/member/member_repo.dart'
     as _i7;
 
@@ -69,6 +70,15 @@ class MockICommunityRepo extends _i1.Mock implements _i2.ICommunityRepo {
             _i3.Future<Iterable<_i6.CommunityReadDTO>>.value(
                 <_i6.CommunityReadDTO>[]),
       ) as _i3.Future<Iterable<_i6.CommunityReadDTO>>);
+  @override
+  _i3.Future<void> archive(String? communityId) => (super.noSuchMethod(
+        Invocation.method(
+          #archive,
+          [communityId],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 }
 
 /// A class which mocks [IMemberRepo].
@@ -76,16 +86,18 @@ class MockICommunityRepo extends _i1.Mock implements _i2.ICommunityRepo {
 /// See the documentation for Mockito's code generation for more information.
 class MockIMemberRepo extends _i1.Mock implements _i7.IMemberRepo {
   @override
-  _i3.Future<Iterable<_i8.Member>> getMembers(String? communityId) =>
+  _i3.Future<Iterable<_i8.MemberReadDto>> getMembers(String? communityId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getMembers,
           [communityId],
         ),
-        returnValue: _i3.Future<Iterable<_i8.Member>>.value(<_i8.Member>[]),
+        returnValue: _i3.Future<Iterable<_i8.MemberReadDto>>.value(
+            <_i8.MemberReadDto>[]),
         returnValueForMissingStub:
-            _i3.Future<Iterable<_i8.Member>>.value(<_i8.Member>[]),
-      ) as _i3.Future<Iterable<_i8.Member>>);
+            _i3.Future<Iterable<_i8.MemberReadDto>>.value(
+                <_i8.MemberReadDto>[]),
+      ) as _i3.Future<Iterable<_i8.MemberReadDto>>);
   @override
   _i3.Future<String> addMember(_i9.MemberCreateDto? dto) => (super.noSuchMethod(
         Invocation.method(
@@ -95,6 +107,23 @@ class MockIMemberRepo extends _i1.Mock implements _i7.IMemberRepo {
         returnValue: _i3.Future<String>.value(''),
         returnValueForMissingStub: _i3.Future<String>.value(''),
       ) as _i3.Future<String>);
+  @override
+  _i3.Future<_i8.MemberReadDto?> getCommunityMemberByUserId({
+    required String? communityId,
+    required String? userId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getCommunityMemberByUserId,
+          [],
+          {
+            #communityId: communityId,
+            #userId: userId,
+          },
+        ),
+        returnValue: _i3.Future<_i8.MemberReadDto?>.value(),
+        returnValueForMissingStub: _i3.Future<_i8.MemberReadDto?>.value(),
+      ) as _i3.Future<_i8.MemberReadDto?>);
 }
 
 /// A class which mocks [IAuthRepo].

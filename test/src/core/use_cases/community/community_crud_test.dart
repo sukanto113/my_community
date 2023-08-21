@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:my_community/src/core/entities/community/community.dart';
+import 'package:my_community/src/core/entities/member/member.dart';
 import 'package:my_community/src/core/entities/user/user.dart';
 import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
 import 'package:my_community/src/core/repositories/community/community_repo.dart';
@@ -9,6 +10,7 @@ import 'package:my_community/src/core/repositories/community/dtos/create/communi
 import 'package:my_community/src/core/repositories/community/dtos/read/community_read_dto.dart';
 import 'package:my_community/src/core/repositories/community/dtos/update/community_update_dto.dart';
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart';
+import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart';
 import 'package:my_community/src/core/repositories/member/member_repo.dart';
 import 'package:my_community/src/core/use_cases/community/community_crud.dart';
 import 'package:faker/faker.dart';
@@ -92,6 +94,42 @@ void setupAuthWithoutAUser() {
 void setupCommunityRepoWithTwoCommunity() {
   when(communityRepo.readCommunitiesByUser(any)).thenAnswer(
       (realInvocation) async => [aCommunityReadDto, bCommunityReadDto]);
+}
+
+void setupUserWithAdminRole() {
+  when(memberRepo.getCommunityMemberByUserId(
+          communityId: anyNamed("communityId"), userId: anyNamed("userId")))
+      .thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: "",
+      phone: "",
+      communityId: "",
+      name: "",
+      role: "admin",
+    ),
+  );
+}
+
+void setupUserWithMemberRole() {
+  when(memberRepo.getCommunityMemberByUserId(
+          communityId: anyNamed("communityId"), userId: anyNamed("userId")))
+      .thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: "",
+      phone: "",
+      communityId: "",
+      name: "",
+      role: "member",
+    ),
+  );
+}
+
+void setupUserWithoutMember() {
+  when(memberRepo.getCommunityMemberByUserId(
+          communityId: anyNamed("communityId"), userId: anyNamed("userId")))
+      .thenAnswer(
+    (realInvocation) async => null,
+  );
 }
 
 void main() {
@@ -375,6 +413,105 @@ void main() {
     test('should throw UserNotFoundError', () {
       expect(() async {
         await sut.getComunitiesForUser();
+      }, throwsA(isA<UserNotFoundError>()));
+    });
+  });
+
+  group('Community archive with auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithAUser();
+    });
+
+    test('should archive a community -E', () async {
+      setupUserWithAdminRole();
+      await sut.archive(aCommunityId);
+
+      verify(communityRepo.archive(any));
+    });
+    test('should archive the community -E.A', () async {
+      setupUserWithAdminRole();
+      await sut.archive(aCommunityId);
+
+      verify(communityRepo.archive(aCommunityId));
+    });
+
+    test('should archive only once -E.B', () async {
+      setupUserWithAdminRole();
+
+      await sut.archive(aCommunityId);
+
+      verify(communityRepo.archive(any)).called(1);
+    });
+    test('should collect member info from repo only once', () async {
+      setupUserWithAdminRole();
+
+      await sut.archive(aCommunityId);
+
+      verify(
+        memberRepo.getCommunityMemberByUserId(
+          communityId: anyNamed("communityId"),
+          userId: anyNamed("userId"),
+        ),
+      ).called(1);
+    });
+    test('should collect member info with communityId', () async {
+      setupUserWithAdminRole();
+
+      await sut.archive(aCommunityId);
+
+      verify(
+        memberRepo.getCommunityMemberByUserId(
+          communityId: aCommunityId,
+          userId: anyNamed("userId"),
+        ),
+      );
+    });
+    test('should collect member info with userId', () async {
+      setupUserWithAdminRole();
+
+      await sut.archive(aCommunityId);
+
+      verify(
+        memberRepo.getCommunityMemberByUserId(
+          communityId: anyNamed("communityId"),
+          userId: aUserId,
+        ),
+      );
+    });
+    test('should not archive if user is in member role', () async {
+      setupUserWithMemberRole();
+      try {
+        await sut.archive(aCommunityId);
+      } catch (e) {}
+
+      verifyNever(communityRepo.archive(any));
+    });
+    test('should throw UserNotPermitError if member info not found', () {
+      setupUserWithoutMember();
+
+      expect(() async {
+        await sut.archive(aCommunityId);
+      }, throwsA(isA<UserNotPermitError>()));
+    });
+    test('should throw UserNotPermitError if user is in member role', () {
+      setupUserWithMemberRole();
+
+      expect(() async {
+        await sut.archive(aCommunityId);
+      }, throwsA(isA<UserNotPermitError>()));
+    });
+  });
+
+  group('Community archive without auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithoutAUser();
+    });
+
+    test('should throw UserNotFoundError', () {
+      expect(() async {
+        await sut.archive(aCommunityId);
       }, throwsA(isA<UserNotFoundError>()));
     });
   });

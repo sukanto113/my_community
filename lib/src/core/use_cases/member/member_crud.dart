@@ -6,7 +6,8 @@ class MemberCrud {
   MemberCrud(this.memberRepo);
   final IMemberRepo memberRepo;
   Future<Iterable<Member>> getMembers(String communityId) async {
-    return await memberRepo.getMembers(communityId);
+    // return await memberRepo.getMembers(communityId);
+    return [];
   }
 
   Future<void> addMember({

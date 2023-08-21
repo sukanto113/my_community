@@ -5,3 +5,4 @@ abstract class IAuthRepo {
 }
 
 class UserNotFoundError extends Error {}
+class UserNotPermitError extends Error {}

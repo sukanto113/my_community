@@ -58,4 +58,16 @@ class CommunityCrud {
               coverImage: e.coverImage,
             ));
   }
+
+  Future<void> archive(String communityId) async {
+    final user = await authRepo.getCurrentUser();
+    if (user == null) throw UserNotFoundError();
+    final member = await memberRepo.getCommunityMemberByUserId(
+        communityId: communityId, userId: user.id);
+    if (member == null) throw UserNotPermitError();
+    if (member.role == "member") {
+      throw UserNotPermitError();
+    }
+    communityRepo.archive(communityId);
+  }
 }

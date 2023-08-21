@@ -9,4 +9,6 @@ abstract class ICommunityRepo {
   Future<void> update(CommunityUpdateDTO dto);
 
   Future<Iterable<CommunityReadDTO>> readCommunitiesByUser(String userId);
+
+  Future<void> archive(String communityId);
 }
