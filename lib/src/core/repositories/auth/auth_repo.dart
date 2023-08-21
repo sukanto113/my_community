@@ -4,4 +4,4 @@ abstract class IAuthRepo {
   Future<User?> getCurrentUser();
 }
 
-class UserNotFound implements Exception {}
+class UserNotFoundError extends Error {}

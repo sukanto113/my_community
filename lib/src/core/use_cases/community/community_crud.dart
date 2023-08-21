@@ -1,10 +1,11 @@
+import 'package:my_community/src/core/repositories/community/dtos/update/community_update_dto.dart';
+
 import '../../entities/community/community.dart';
 import '../../entities/member/member.dart';
 import '../../entities/user/user.dart';
 import '../../repositories/auth/auth_repo.dart';
 import '../../repositories/community/community_repo.dart';
 import '../../repositories/community/dtos/create/community_create_dot.dart';
-import '../../repositories/community/mapper.dart';
 import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
 
@@ -17,10 +18,12 @@ class CommunityCrud {
   //controller will only handle event from ui
   Future<void> create(String name) async {
     final User? user = await authRepo.getCurrentUser();
-    if (user == null) throw UserNotFound();
+    if (user == null) throw UserNotFoundError();
+
     final communityId = await communityRepo.create(
       CommunityCreateDTO(name: name),
     );
+
     memberRepo.addMember(MemberCreateDto(
       phone: user.phone,
       communityId: communityId,
@@ -32,13 +35,27 @@ class CommunityCrud {
   }
 
   Future<void> update(Community community) async {
-    await communityRepo.update(community.toUpdateDto());
+    final User? user = await authRepo.getCurrentUser();
+    if (user == null) throw UserNotFoundError();
+    await communityRepo.update(CommunityUpdateDTO(
+      id: community.id,
+      coverImage: community.coverImage,
+      description: community.description,
+      name: community.name,
+      profileImage: community.profileImage,
+    ));
   }
 
   Future<Iterable<Community>> getComunitiesForUser() async {
-    final User? user = await authRepo.getCurrentUser();
-    if (user == null) throw UserNotFound();
+    final user = await authRepo.getCurrentUser();
+    if (user == null) throw UserNotFoundError();
     return (await communityRepo.readCommunitiesByUser(user.id))
-        .map((e) => e.toCommunity());
+        .map((e) => Community(
+              id: e.id,
+              name: e.name,
+              description: e.description,
+              profileImage: e.profileImage,
+              coverImage: e.coverImage,
+            ));
   }
 }

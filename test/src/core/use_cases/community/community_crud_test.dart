@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:my_community/src/core/entities/community/community.dart';
 import 'package:my_community/src/core/entities/user/user.dart';
 import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
 import 'package:my_community/src/core/repositories/community/community_repo.dart';
 import 'package:my_community/src/core/repositories/community/dtos/create/community_create_dot.dart';
+import 'package:my_community/src/core/repositories/community/dtos/read/community_read_dto.dart';
+import 'package:my_community/src/core/repositories/community/dtos/update/community_update_dto.dart';
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart';
 import 'package:my_community/src/core/repositories/member/member_repo.dart';
 import 'package:my_community/src/core/use_cases/community/community_crud.dart';
@@ -18,27 +21,83 @@ import 'package:faker/faker.dart';
 import 'community_crud_test.mocks.dart';
 
 final facker = Faker();
+
+final aUserId = facker.randomGenerator.integer(1000).toString();
+final aUserPhone = facker.phoneNumber.us();
+final aUserName = facker.person.name();
+
 final aUser = User(
-  id: facker.randomGenerator.integer(1000).toString(),
-  phone: facker.phoneNumber.us(),
-  name: facker.person.name(),
+  id: aUserId,
+  phone: aUserPhone,
+  name: aUserName,
 );
+
+final aCommunityId = facker.randomGenerator.integer(10000).toString();
+final bCommunityId = facker.randomGenerator.integer(10000).toString();
 final aCommunityName = facker.company.name();
-final aCommunityId = facker.randomGenerator.integer(1000).toString();
+final bCommunityName = facker.company.name();
+final aCommunityDescription = facker.lorem.sentence();
+final bCommunityDescription = facker.lorem.sentence();
+final aCommunityProfileImage = facker.lorem.sentence();
+final bCommunityProfileImage = facker.lorem.sentence();
+final aCommunityCoverImage = facker.lorem.sentence();
+final bCommunityCoverImage = facker.lorem.sentence();
+
+final aCommunityReadDto = CommunityReadDTO(
+  id: aCommunityId,
+  name: aCommunityName,
+  description: aCommunityDescription,
+  profileImage: aCommunityProfileImage,
+  coverImage: aCommunityCoverImage,
+);
+final bCommunityReadDto = CommunityReadDTO(
+  id: bCommunityId,
+  name: bCommunityName,
+  description: bCommunityDescription,
+  profileImage: bCommunityProfileImage,
+  coverImage: bCommunityCoverImage,
+);
+
+final aCommunity = Community(
+  id: aCommunityId,
+  name: aCommunityName,
+  coverImage: aCommunityCoverImage,
+  description: aCommunityDescription,
+  profileImage: aCommunityProfileImage,
+);
 
 late CommunityCrud sut;
 late MockICommunityRepo communityRepo;
 late MockIMemberRepo memberRepo;
 late MockIAuthRepo authRepo;
+
+void setupSut() {
+  communityRepo = MockICommunityRepo();
+  memberRepo = MockIMemberRepo();
+  authRepo = MockIAuthRepo();
+
+  sut = CommunityCrud(communityRepo, memberRepo, authRepo);
+}
+
+void setupAuthWithAUser() {
+  when(authRepo.getCurrentUser()).thenAnswer(
+    (realInvocation) async => aUser,
+  );
+}
+
+void setupAuthWithoutAUser() {
+  when(authRepo.getCurrentUser()).thenAnswer((realInvocation) async => null);
+}
+
+void setupCommunityRepoWithTwoCommunity() {
+  when(communityRepo.readCommunitiesByUser(any)).thenAnswer(
+      (realInvocation) async => [aCommunityReadDto, bCommunityReadDto]);
+}
+
 void main() {
   group('Community create with auth', () {
     setUp(() async {
-      communityRepo = MockICommunityRepo();
-      memberRepo = MockIMemberRepo();
-      authRepo = MockIAuthRepo();
-
-      sut = CommunityCrud(communityRepo, memberRepo, authRepo);
-
+      setupSut();
       setupAuthWithAUser();
     });
 
@@ -123,10 +182,200 @@ void main() {
       );
     });
   });
-}
 
-void setupAuthWithAUser() {
-  when(authRepo.getCurrentUser()).thenAnswer(
-    (realInvocation) async => aUser,
-  );
+  group('Community create without auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithoutAUser();
+    });
+    test('should throw UserNotFound error', () {
+      expect(
+        () async {
+          await sut.create(aCommunityName);
+        },
+        throwsA(isA<UserNotFoundError>()),
+      );
+    });
+  });
+
+  group('Community update with auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithAUser();
+    });
+
+    test('should update community -C', () async {
+      await sut.update(aCommunity);
+
+      verify(communityRepo.update(any));
+    });
+
+    test('should update exactly one time -C.A', () async {
+      await sut.update(aCommunity);
+
+      verify(communityRepo.update(any)).called(1);
+    });
+
+    test('should update a community with same id -C.B', () async {
+      await sut.update(aCommunity);
+
+      verify(
+        communityRepo.update(
+          argThat(
+            isA<CommunityUpdateDTO>().having((p0) => p0.id, "id", aCommunityId),
+          ),
+        ),
+      );
+    });
+
+    test('should update community name -C.D', () async {
+      await sut.update(aCommunity);
+
+      verify(
+        communityRepo.update(
+          argThat(
+            isA<CommunityUpdateDTO>()
+                .having((p0) => p0.name, "name", aCommunityName),
+          ),
+        ),
+      );
+    });
+    test('should update community description -C.E', () async {
+      await sut.update(aCommunity);
+
+      verify(
+        communityRepo.update(
+          argThat(
+            isA<CommunityUpdateDTO>().having(
+                (p0) => p0.description, "description", aCommunityDescription),
+          ),
+        ),
+      );
+    });
+
+    test('should update community profileImage -C.F', () async {
+      await sut.update(aCommunity);
+
+      verify(
+        communityRepo.update(
+          argThat(
+            isA<CommunityUpdateDTO>().having((p0) => p0.profileImage,
+                "profileImage", aCommunityProfileImage),
+          ),
+        ),
+      );
+    });
+
+    test('should update community coverImage -C.G', () async {
+      await sut.update(aCommunity);
+
+      verify(
+        communityRepo.update(
+          argThat(
+            isA<CommunityUpdateDTO>().having(
+                (p0) => p0.coverImage, "coverImage", aCommunityCoverImage),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('Community update without auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithoutAUser();
+    });
+
+    test('should throw UserNotFound error', () {
+      expect(
+        () async {
+          await sut.update(aCommunity);
+        },
+        throwsA(isA<UserNotFoundError>()),
+      );
+    });
+  });
+
+  group('Communities get with auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithAUser();
+    });
+
+    test('should read data from repo exactly only once -D', () async {
+      await sut.getComunitiesForUser();
+
+      verify(communityRepo.readCommunitiesByUser(any)).called(1);
+    });
+
+    test('should returns communities for currentUser -D.A', () async {
+      await sut.getComunitiesForUser();
+
+      verify(communityRepo.readCommunitiesByUser(aUserId));
+    });
+
+    test('should match total number communities with repos -D.B', () async {
+      setupCommunityRepoWithTwoCommunity();
+
+      final communities = await sut.getComunitiesForUser();
+
+      expect(communities.length, 2);
+    });
+
+    test('should returned community id matched with repo -D.C', () async {
+      setupCommunityRepoWithTwoCommunity();
+
+      final communities = await sut.getComunitiesForUser();
+
+      expect(communities.elementAt(0).id, aCommunityId);
+      expect(communities.elementAt(1).id, bCommunityId);
+    });
+    test('should returned community name matched with repo -D.D', () async {
+      setupCommunityRepoWithTwoCommunity();
+
+      final communities = await sut.getComunitiesForUser();
+
+      expect(communities.elementAt(0).name, aCommunityName);
+      expect(communities.elementAt(1).name, bCommunityName);
+    });
+    test('should returned community description matched with repo -D.E',
+        () async {
+      setupCommunityRepoWithTwoCommunity();
+
+      final communities = await sut.getComunitiesForUser();
+
+      expect(communities.elementAt(0).description, aCommunityDescription);
+      expect(communities.elementAt(1).description, bCommunityDescription);
+    });
+    test('should returned community profileImage matched with repo -D.F',
+        () async {
+      setupCommunityRepoWithTwoCommunity();
+
+      final communities = await sut.getComunitiesForUser();
+
+      expect(communities.elementAt(0).profileImage, aCommunityProfileImage);
+      expect(communities.elementAt(1).profileImage, bCommunityProfileImage);
+    });
+    test('should returned community coverImage matched with repo -D.G',
+        () async {
+      setupCommunityRepoWithTwoCommunity();
+
+      final communities = await sut.getComunitiesForUser();
+
+      expect(communities.elementAt(0).coverImage, aCommunityCoverImage);
+      expect(communities.elementAt(1).coverImage, bCommunityCoverImage);
+    });
+  });
+
+  group('Communities get without auth', () {
+    setUp(() {
+      setupSut();
+      setupAuthWithoutAUser();
+    });
+    test('should throw UserNotFoundError', () {
+      expect(() async {
+        await sut.getComunitiesForUser();
+      }, throwsA(isA<UserNotFoundError>()));
+    });
+  });
 }
