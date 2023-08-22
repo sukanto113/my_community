@@ -98,7 +98,7 @@ void setupCommunityRepoWithTwoCommunity() {
 
 void setupUserWithAdminRole() {
   when(memberRepo.getCommunityMemberByUserId(
-          communityId: anyNamed("communityId"), userId: anyNamed("userId")))
+          communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => MemberReadDto(
       id: "",
@@ -243,18 +243,24 @@ void main() {
     });
 
     test('should update community -C', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(communityRepo.update(any));
     });
 
     test('should update exactly one time -C.A', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(communityRepo.update(any)).called(1);
     });
 
     test('should update a community with same id -C.B', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(
@@ -267,6 +273,8 @@ void main() {
     });
 
     test('should update community name -C.D', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(
@@ -279,6 +287,8 @@ void main() {
       );
     });
     test('should update community description -C.E', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(
@@ -292,6 +302,8 @@ void main() {
     });
 
     test('should update community profileImage -C.F', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(
@@ -305,6 +317,8 @@ void main() {
     });
 
     test('should update community coverImage -C.G', () async {
+      setupUserWithAdminRole();
+
       await sut.update(aCommunity);
 
       verify(
@@ -315,6 +329,15 @@ void main() {
           ),
         ),
       );
+    });
+    test('should not update if user is in member role', () async {
+      setupUserWithMemberRole();
+
+      try {
+        await sut.update(aCommunity);
+      } catch (e) {}
+
+      verifyNever(communityRepo.update(any));
     });
   });
 
@@ -417,102 +440,79 @@ void main() {
     });
   });
 
-  group('Community archive with auth', () {
-    setUp(() {
-      setupSut();
-      setupAuthWithAUser();
+  group('Community archive', () {
+    group('with auth', () {
+      setUp(() {
+        setupSut();
+        setupAuthWithAUser();
+      });
+
+      test('should call getCommunityMemberByUserId exactly once', () async {
+        try {
+          await sut.archive(aCommunityId);
+        } catch (e) {}
+
+        verify(
+          memberRepo.getCommunityMemberByUserId(
+            communityId: anyNamed("communityId"),
+            userId: anyNamed("userId"),
+          ),
+        ).called(1);
+      });
+      test(
+          'should throw UserNotPermitError if user is not member of the community',
+          () {
+        setupUserWithoutMember();
+
+        expect(() async {
+          await sut.archive(aCommunityId);
+        }, throwsA(isA<UserNotPermitError>()));
+      });
+      group('user with admin role', () {
+        setUp(() {
+          setupUserWithAdminRole();
+        });
+        test('should archive the community -E', () async {
+          await sut.archive(aCommunityId);
+
+          verify(communityRepo.archive(aCommunityId));
+        });
+
+        test('should call archive exactly once -E.B', () async {
+          await sut.archive(aCommunityId);
+
+          verify(communityRepo.archive(any)).called(1);
+        });
+      });
+      group('user with member role', () {
+        test('should not archive the community', () async {
+          setupUserWithMemberRole();
+          try {
+            await sut.archive(aCommunityId);
+          } catch (e) {}
+
+          verifyNever(communityRepo.archive(any));
+        });
+        test('should throw UserNotPermitError', () {
+          setupUserWithMemberRole();
+
+          expect(() async {
+            await sut.archive(aCommunityId);
+          }, throwsA(isA<UserNotPermitError>()));
+        });
+      });
     });
+    group('without auth', () {
+      setUp(() {
+        setupSut();
+        setupAuthWithoutAUser();
+      });
 
-    test('should archive a community -E', () async {
-      setupUserWithAdminRole();
-      await sut.archive(aCommunityId);
-
-      verify(communityRepo.archive(any));
-    });
-    test('should archive the community -E.A', () async {
-      setupUserWithAdminRole();
-      await sut.archive(aCommunityId);
-
-      verify(communityRepo.archive(aCommunityId));
-    });
-
-    test('should archive only once -E.B', () async {
-      setupUserWithAdminRole();
-
-      await sut.archive(aCommunityId);
-
-      verify(communityRepo.archive(any)).called(1);
-    });
-    test('should collect member info from repo only once', () async {
-      setupUserWithAdminRole();
-
-      await sut.archive(aCommunityId);
-
-      verify(
-        memberRepo.getCommunityMemberByUserId(
-          communityId: anyNamed("communityId"),
-          userId: anyNamed("userId"),
-        ),
-      ).called(1);
-    });
-    test('should collect member info with communityId', () async {
-      setupUserWithAdminRole();
-
-      await sut.archive(aCommunityId);
-
-      verify(
-        memberRepo.getCommunityMemberByUserId(
-          communityId: aCommunityId,
-          userId: anyNamed("userId"),
-        ),
-      );
-    });
-    test('should collect member info with userId', () async {
-      setupUserWithAdminRole();
-
-      await sut.archive(aCommunityId);
-
-      verify(
-        memberRepo.getCommunityMemberByUserId(
-          communityId: anyNamed("communityId"),
-          userId: aUserId,
-        ),
-      );
-    });
-    test('should not archive if user is in member role', () async {
-      setupUserWithMemberRole();
-      try {
-        await sut.archive(aCommunityId);
-      } catch (e) {}
-
-      verifyNever(communityRepo.archive(any));
-    });
-    test('should throw UserNotPermitError if member info not found', () {
-      setupUserWithoutMember();
-
-      expect(() async {
-        await sut.archive(aCommunityId);
-      }, throwsA(isA<UserNotPermitError>()));
-    });
-    test('should throw UserNotPermitError if user is in member role', () {
-      setupUserWithMemberRole();
-
-      expect(() async {
-        await sut.archive(aCommunityId);
-      }, throwsA(isA<UserNotPermitError>()));
-    });
-  });
-
-  group('Community archive without auth', () {
-    setUp(() {
-      setupSut();
-      setupAuthWithoutAUser();
-    });
-
-    test('should throw UserNotFoundError', () {
-      expect(() async {
-        await sut.archive(aCommunityId);
-      }, throwsA(isA<UserNotFoundError>()));
+      test('should throw UserNotFoundError', () {
+        expect(() async {
+          await sut.archive(aCommunityId);
+        }, throwsA(isA<UserNotFoundError>()));
+      });
     });
   });
 }

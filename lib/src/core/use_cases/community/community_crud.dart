@@ -37,6 +37,11 @@ class CommunityCrud {
   Future<void> update(Community community) async {
     final User? user = await authRepo.getCurrentUser();
     if (user == null) throw UserNotFoundError();
+    final member = await memberRepo.getCommunityMemberByUserId(
+      communityId: community.id,
+      userId: user.id,
+    );
+    if (member!.role == "member") throw UserNotPermitError();
     await communityRepo.update(CommunityUpdateDTO(
       id: community.id,
       coverImage: community.coverImage,
