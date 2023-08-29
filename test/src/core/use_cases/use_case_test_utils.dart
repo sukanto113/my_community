@@ -34,10 +34,26 @@ final aCommunityName = facker.company.name();
 final bCommunityName = facker.company.name();
 final aCommunityDescription = facker.lorem.sentence();
 final bCommunityDescription = facker.lorem.sentence();
-final aCommunityProfileImage = facker.lorem.sentence();
-final bCommunityProfileImage = facker.lorem.sentence();
-final aCommunityCoverImage = facker.lorem.sentence();
-final bCommunityCoverImage = facker.lorem.sentence();
+final aCommunityProfileImage = facker.image.image(random: true);
+final bCommunityProfileImage = facker.image.image(random: true);
+final aCommunityCoverImage = facker.image.image(random: true);
+final bCommunityCoverImage = facker.image.image(random: true);
+
+final aMemberId = facker.guid.guid();
+final aMemberName = facker.person.name();
+final aMemberPhone = facker.phoneNumber.us();
+final aMemberRole = "admin";
+final aMemberUserId = facker.guid.guid();
+final aMemberDesignation = facker.job.title();
+final aMemberProfileImage = facker.image.image(random: true);
+
+final bMemberId = facker.guid.guid();
+final bMemberName = facker.person.name();
+final bMemberPhone = facker.phoneNumber.us();
+final bMemberRole = "member";
+final bMemberUserId = facker.guid.guid();
+final bMemberDesignation = facker.job.title();
+final bMemberProfileImage = facker.image.image(random: true);
 
 final aCommunityReadDto = CommunityReadDTO(
   id: aCommunityId,
@@ -46,6 +62,7 @@ final aCommunityReadDto = CommunityReadDTO(
   profileImage: aCommunityProfileImage,
   coverImage: aCommunityCoverImage,
 );
+
 final bCommunityReadDto = CommunityReadDTO(
   id: bCommunityId,
   name: bCommunityName,
@@ -60,6 +77,28 @@ final aCommunity = Community(
   coverImage: aCommunityCoverImage,
   description: aCommunityDescription,
   profileImage: aCommunityProfileImage,
+);
+
+final aMemberReadDto = MemberReadDto(
+  id: aMemberId,
+  phone: aMemberPhone,
+  communityId: aCommunityId,
+  name: aMemberName,
+  role: aMemberRole,
+  userId: aMemberUserId,
+  designation: aMemberDesignation,
+  profileImage: aMemberProfileImage,
+);
+
+final bMemberReadDto = MemberReadDto(
+  id: bMemberId,
+  phone: bMemberPhone,
+  communityId: aCommunityId,
+  name: bMemberName,
+  role: bMemberRole,
+  userId: bMemberUserId,
+  designation: bMemberDesignation,
+  profileImage: bMemberProfileImage,
 );
 
 late MockICommunityRepo communityRepo;
@@ -114,5 +153,14 @@ void setupUserWithoutMember() {
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => null,
+  );
+}
+
+void setupMemberRepoWithTwoMember() {
+  when(memberRepo.getMembers(aCommunityId)).thenAnswer(
+    (realInvocation) async => [
+      aMemberReadDto,
+      bMemberReadDto,
+    ],
   );
 }
