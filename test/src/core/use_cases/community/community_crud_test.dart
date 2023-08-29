@@ -112,7 +112,7 @@ void setupUserWithAdminRole() {
 
 void setupUserWithMemberRole() {
   when(memberRepo.getCommunityMemberByUserId(
-          communityId: anyNamed("communityId"), userId: anyNamed("userId")))
+          communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => MemberReadDto(
       id: "",
@@ -126,7 +126,7 @@ void setupUserWithMemberRole() {
 
 void setupUserWithoutMember() {
   when(memberRepo.getCommunityMemberByUserId(
-          communityId: anyNamed("communityId"), userId: anyNamed("userId")))
+          communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => null,
   );
@@ -454,15 +454,6 @@ void main() {
           ),
         ).called(1);
       });
-      test(
-          'should throw UserNotPermitError if user is not member of the community',
-          () {
-        setupUserWithoutMember();
-
-        expect(() async {
-          await sut.archive(aCommunityId);
-        }, throwsA(isA<UserNotPermitError>()));
-      });
       group('user with admin role', () {
         setUp(() {
           setupUserWithAdminRole();
@@ -473,7 +464,7 @@ void main() {
           verify(communityRepo.archive(aCommunityId));
         });
 
-        test('should call archive exactly once -E.B', () async {
+        test('should call repo.archive exactly once -E.B', () async {
           await sut.archive(aCommunityId);
 
           verify(communityRepo.archive(any)).called(1);

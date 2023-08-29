@@ -1,29 +1,30 @@
+import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
+
 import '../../entities/member/member.dart';
 import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
 
 class MemberCrud {
-  MemberCrud(this.memberRepo);
-  final IMemberRepo memberRepo;
-  Future<Iterable<Member>> getMembers(String communityId) async {
-    // return await memberRepo.getMembers(communityId);
-    return [];
-  }
+  MemberCrud({required this.authRepo, required this.memberRepo});
 
-  Future<void> addMember({
-    required String communityId,
-    required String name,
-    required String phone,
-    String? designation,
-    String? profileImage,
-  }) async {
-    memberRepo.addMember(MemberCreateDto(
-      phone: phone,
-      communityId: communityId,
-      name: name,
-      role: MemberRole.member.name,
-      designation: designation,
-      profileImage: profileImage,
-    ));
+  final IMemberRepo memberRepo;
+  final IAuthRepo authRepo;
+  Future<void> addMember(
+      {required communityId, required phone, required name}) async {
+    final user = await authRepo.getCurrentUser();
+    if (user == null) {
+      throw UserNotFoundError();
+    }
+    final member = await memberRepo.getCommunityMemberByUserId(
+        communityId: communityId, userId: user.id);
+    if (member == null || member.role == "member") throw UserNotPermitError();
+    await memberRepo.addMember(
+      MemberCreateDto(
+        phone: phone,
+        communityId: communityId,
+        name: name,
+        role: "member",
+      ),
+    );
   }
 }
