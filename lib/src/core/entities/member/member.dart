@@ -9,6 +9,7 @@ class Member with _$Member{
     required String communityId,
     required String name,
     required MemberRole role,
+    String? userId,
     String? designation,
     String? profileImage,
   }) = _Member;

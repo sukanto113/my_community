@@ -1,3 +1,4 @@
+import '../../entities/member/member.dart';
 import '../../repositories/auth/auth_repo.dart';
 import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
@@ -30,6 +31,34 @@ class MemberCrud {
         communityId: communityId,
         name: name,
         role: "member",
+      ),
+    );
+  }
+
+  Future<Iterable<Member>> get(String communityId) async {
+    final user = await authRepo.getCurrentUser();
+    if (user == null) throw UserNotFoundError();
+
+    final member = await memberRepo.getCommunityMemberByUserId(
+      communityId: communityId,
+      userId: user.id,
+    );
+    if (member == null) throw UserNotPermitError();
+
+    return (await memberRepo.getMembers(communityId)).map(
+      (e) => Member(
+        id: e.id,
+        phone: e.phone,
+        communityId: e.communityId,
+        name: e.name,
+        role: switch (e.role) {
+          "member" => MemberRole.member,
+          "admin" => MemberRole.admin,
+          _ => MemberRole.member,
+        },
+        userId: e.userId,
+        designation: e.designation,
+        profileImage: e.profileImage,
       ),
     );
   }

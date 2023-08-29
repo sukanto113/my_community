@@ -21,6 +21,7 @@ mixin _$Member {
   String get communityId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   MemberRole get role => throw _privateConstructorUsedError;
+  String? get userId => throw _privateConstructorUsedError;
   String? get designation => throw _privateConstructorUsedError;
   String? get profileImage => throw _privateConstructorUsedError;
 
@@ -39,6 +40,7 @@ abstract class $MemberCopyWith<$Res> {
       String communityId,
       String name,
       MemberRole role,
+      String? userId,
       String? designation,
       String? profileImage});
 }
@@ -61,6 +63,7 @@ class _$MemberCopyWithImpl<$Res, $Val extends Member>
     Object? communityId = null,
     Object? name = null,
     Object? role = null,
+    Object? userId = freezed,
     Object? designation = freezed,
     Object? profileImage = freezed,
   }) {
@@ -85,6 +88,10 @@ class _$MemberCopyWithImpl<$Res, $Val extends Member>
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as MemberRole,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
       designation: freezed == designation
           ? _value.designation
           : designation // ignore: cast_nullable_to_non_nullable
@@ -109,6 +116,7 @@ abstract class _$$_MemberCopyWith<$Res> implements $MemberCopyWith<$Res> {
       String communityId,
       String name,
       MemberRole role,
+      String? userId,
       String? designation,
       String? profileImage});
 }
@@ -128,6 +136,7 @@ class __$$_MemberCopyWithImpl<$Res>
     Object? communityId = null,
     Object? name = null,
     Object? role = null,
+    Object? userId = freezed,
     Object? designation = freezed,
     Object? profileImage = freezed,
   }) {
@@ -152,6 +161,10 @@ class __$$_MemberCopyWithImpl<$Res>
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as MemberRole,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
       designation: freezed == designation
           ? _value.designation
           : designation // ignore: cast_nullable_to_non_nullable
@@ -173,6 +186,7 @@ class _$_Member implements _Member {
       required this.communityId,
       required this.name,
       required this.role,
+      this.userId,
       this.designation,
       this.profileImage});
 
@@ -187,13 +201,15 @@ class _$_Member implements _Member {
   @override
   final MemberRole role;
   @override
+  final String? userId;
+  @override
   final String? designation;
   @override
   final String? profileImage;
 
   @override
   String toString() {
-    return 'Member(id: $id, phone: $phone, communityId: $communityId, name: $name, role: $role, designation: $designation, profileImage: $profileImage)';
+    return 'Member(id: $id, phone: $phone, communityId: $communityId, name: $name, role: $role, userId: $userId, designation: $designation, profileImage: $profileImage)';
   }
 
   @override
@@ -207,6 +223,7 @@ class _$_Member implements _Member {
                 other.communityId == communityId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.designation, designation) ||
                 other.designation == designation) &&
             (identical(other.profileImage, profileImage) ||
@@ -215,7 +232,7 @@ class _$_Member implements _Member {
 
   @override
   int get hashCode => Object.hash(runtimeType, id, phone, communityId, name,
-      role, designation, profileImage);
+      role, userId, designation, profileImage);
 
   @JsonKey(ignore: true)
   @override
@@ -231,6 +248,7 @@ abstract class _Member implements Member {
       required final String communityId,
       required final String name,
       required final MemberRole role,
+      final String? userId,
       final String? designation,
       final String? profileImage}) = _$_Member;
 
@@ -244,6 +262,8 @@ abstract class _Member implements Member {
   String get name;
   @override
   MemberRole get role;
+  @override
+  String? get userId;
   @override
   String? get designation;
   @override
