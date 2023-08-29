@@ -1,6 +1,4 @@
-import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
-
-import '../../entities/member/member.dart';
+import '../../repositories/auth/auth_repo.dart';
 import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
 
@@ -9,15 +7,23 @@ class MemberCrud {
 
   final IMemberRepo memberRepo;
   final IAuthRepo authRepo;
-  Future<void> addMember(
-      {required communityId, required phone, required name}) async {
+
+  Future<void> addMember({
+    required communityId,
+    required phone,
+    required name,
+  }) async {
     final user = await authRepo.getCurrentUser();
-    if (user == null) {
-      throw UserNotFoundError();
-    }
+    if (user == null) throw UserNotFoundError();
+
     final member = await memberRepo.getCommunityMemberByUserId(
-        communityId: communityId, userId: user.id);
-    if (member == null || member.role == "member") throw UserNotPermitError();
+      communityId: communityId,
+      userId: user.id,
+    );
+
+    if (member == null) throw UserNotPermitError();
+    if (member.role == "member") throw UserNotPermitError();
+
     await memberRepo.addMember(
       MemberCreateDto(
         phone: phone,

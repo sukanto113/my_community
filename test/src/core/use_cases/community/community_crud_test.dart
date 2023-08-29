@@ -9,7 +9,6 @@ import 'package:my_community/src/core/use_cases/community/community_crud.dart';
 import '../use_case_test_utils.dart';
 import '../use_case_test_utils.mocks.dart';
 
-
 late CommunityCrud sut;
 
 void setupSut() {
@@ -17,9 +16,12 @@ void setupSut() {
   memberRepo = MockIMemberRepo();
   authRepo = MockIAuthRepo();
 
-  sut = CommunityCrud(communityRepo, memberRepo, authRepo);
+  sut = CommunityCrud(
+    communityRepo: communityRepo,
+    memberRepo: memberRepo,
+    authRepo: authRepo,
+  );
 }
-
 
 void main() {
   group('Community create', () {
@@ -220,6 +222,24 @@ void main() {
           );
         });
       });
+      group('user not a member', () {
+        setUp(() {
+          setupUserWithoutMember();
+        });
+
+        test('should throw UserNotPermitError', () {
+          expect(() async {
+            await sut.update(aCommunity);
+          }, throwsA(isA<UserNotPermitError>()));
+        });
+        test('should not call repo.update', () async {
+          try {
+            await sut.update(aCommunity);
+          } catch (e) {}
+
+          verifyNever(communityRepo.update(any));
+        });
+      });
     });
 
     group('without auth', () {
@@ -374,6 +394,25 @@ void main() {
           expect(() async {
             await sut.archive(aCommunityId);
           }, throwsA(isA<UserNotPermitError>()));
+        });
+      });
+
+      group('user not member', () {
+        setUp(() {
+          setupUserWithoutMember();
+        });
+
+        test('should throw UserNotPermitError', () {
+          expect(() async {
+            await sut.archive(aCommunityId);
+          }, throwsA(isA<UserNotPermitError>()));
+        });
+        test('should not archive the community', () async {
+          try {
+            await sut.archive(aCommunityId);
+          } catch (e) {}
+
+          verifyNever(communityRepo.archive(any));
         });
       });
     });
