@@ -1,31 +1,16 @@
-import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:my_community/src/core/entities/user/user.dart';
 import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart';
-import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart';
-import 'package:my_community/src/core/repositories/member/member_repo.dart';
 import 'package:my_community/src/core/use_cases/member/member_crud.dart';
 
-@GenerateNiceMocks([
-  MockSpec<IAuthRepo>(),
-  MockSpec<IMemberRepo>(),
-])
-import 'member_crud_test.mocks.dart';
+import '../use_case_test_utils.dart';
+import '../use_case_test_utils.mocks.dart';
 
-final facker = Faker();
-final aCommunityId = facker.guid.guid();
 final aMemberName = facker.person.name();
 final aMemberPhone = facker.phoneNumber.us();
-final aUserId = facker.guid.guid();
-final aUserName = facker.person.name();
-final aUserPhone = facker.phoneNumber.us();
 
 late MemberCrud sut;
-late MockIAuthRepo authRepo;
-late MockIMemberRepo memberRepo;
 
 void setupSut() {
   authRepo = MockIAuthRepo();
@@ -33,34 +18,6 @@ void setupSut() {
   sut = MemberCrud(
     authRepo: authRepo,
     memberRepo: memberRepo,
-  );
-}
-
-void setupUserWithAdminRole() {
-  when(memberRepo.getCommunityMemberByUserId(
-          communityId: aCommunityId, userId: aUserId))
-      .thenAnswer(
-    (realInvocation) async => MemberReadDto(
-      id: "",
-      phone: "",
-      communityId: "",
-      name: "",
-      role: "admin",
-    ),
-  );
-}
-
-void setupUserWithMemberRole() {
-  when(memberRepo.getCommunityMemberByUserId(
-          communityId: aCommunityId, userId: aUserId))
-      .thenAnswer(
-    (realInvocation) async => MemberReadDto(
-      id: "",
-      phone: "",
-      communityId: "",
-      name: "",
-      role: "member",
-    ),
   );
 }
 
@@ -175,7 +132,7 @@ void main() {
     });
     group('without auth', () {
       setUp(() {
-        setupAuthWithoutUser();
+        setupAuthWithoutAUser();
       });
       test('should throw UserNotFoundError', () {
         expect(() async {
@@ -201,20 +158,4 @@ void main() {
       });
     });
   });
-}
-
-void setupAuthWithAUser() {
-  when(authRepo.getCurrentUser()).thenAnswer(
-    (realInvocation) async => User(
-      id: aUserId,
-      phone: aUserPhone,
-      name: aUserName,
-    ),
-  );
-}
-
-void setupAuthWithoutUser() {
-  when(authRepo.getCurrentUser()).thenAnswer(
-    (realInvocation) async => null,
-  );
 }
