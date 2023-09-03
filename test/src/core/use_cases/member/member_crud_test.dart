@@ -3,6 +3,8 @@ import 'package:mockito/mockito.dart';
 import 'package:my_community/src/core/entities/member/member.dart';
 import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart';
+import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart';
+import 'package:my_community/src/core/repositories/member/dtos/update/member_update_dto.dart';
 import 'package:my_community/src/core/use_cases/member/member_crud.dart';
 
 import '../use_case_test_utils.dart';
@@ -24,6 +26,16 @@ Future<void> addAMember() async {
     communityId: aCommunityId,
     phone: aMemberPhone,
     name: aMemberName,
+  );
+}
+
+Future<void> updateAMember() async {
+  await sut.updateMember(
+    id: aMemberId,
+    phone: aMemberPhone,
+    name: aMemberName,
+    designation: aMemberDesignation,
+    profileImage: aMemberProfileImage,
   );
 }
 
@@ -157,6 +169,210 @@ void main() {
     });
   });
 
+  group('Member update', () {
+    setUp(() {
+      setupSut();
+    });
+
+    group('with auth', () {
+      setUp(() {
+        setupAuthWithAUser();
+        setupRepoWithAMemberAndACommunity();
+      });
+      test('should call repo.getMember exactly once', () async {
+        try {
+          await updateAMember();
+        } catch (e) {}
+
+        verify(memberRepo.getMember(aMemberId)).called(1);
+      });
+
+      group('when user is not member', () {
+        test('should not call repo.update', () async {
+          try {
+            await updateAMember();
+          } catch (e) {}
+
+          verifyNever(memberRepo.update(any));
+        });
+        test('should throw UserNotPermitError', () {
+          expect(() async {
+            await updateAMember();
+          }, throwsA(isA<UserNotPermitError>()));
+        });
+      });
+      group('with member role', () {
+        setUp(() {
+          setupUserWithMemberRole();
+        });
+        test('should not call repo.update', () async {
+          try {
+            await updateAMember();
+          } catch (e) {}
+
+          verifyNever(memberRepo.update(any));
+        });
+        test('should throw UserNotPermitError', () {
+          expect(() async {
+            await updateAMember();
+          }, throwsA(isA<UserNotPermitError>()));
+        });
+      });
+      group('user with admin role', () {
+        setUp(() {
+          setupUserWithAdminRole();
+        });
+
+        test('should call repo.getCommunityMemberByUserId exactly once',
+            () async {
+          try {
+            await updateAMember();
+          } catch (e) {}
+
+          verify(memberRepo.getCommunityMemberByUserId(
+            communityId: anyNamed("communityId"),
+            userId: anyNamed("userId"),
+          )).called(1);
+        });
+
+        test('should call repo.update exactly once', () async {
+          await updateAMember();
+
+          verify(memberRepo.update(any)).called(1);
+        });
+        test('should update the member', () async {
+          await updateAMember();
+
+          verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>().having((p0) => p0.id, "id", aMemberId))));
+        });
+        group('should update property', () {
+          test('phone', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>()
+                  .having((p0) => p0.phone, "phone", aMemberPhone),
+            )));
+          });
+          test('name', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>()
+                  .having((p0) => p0.name, "name", aMemberName),
+            )));
+          });
+          test('designation', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>().having(
+                  (p0) => p0.designation, "designation", aMemberDesignation),
+            )));
+          });
+          test('profileImage', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>().having(
+                  (p0) => p0.profileImage, "profileImage", aMemberProfileImage),
+            )));
+          });
+        });
+      });
+      group('when user is the member', () {
+        setUp(() {
+          setupUserAsTheMember();
+        });
+
+        test('should call repo.getCommunityMemberByUserId exactly once',
+            () async {
+          try {
+            await updateAMember();
+          } catch (e) {}
+
+          verify(memberRepo.getCommunityMemberByUserId(
+            communityId: anyNamed("communityId"),
+            userId: anyNamed("userId"),
+          )).called(1);
+        });
+
+        test('should call repo.update exactly once', () async {
+          await updateAMember();
+
+          verify(memberRepo.update(any)).called(1);
+        });
+        test('should update the member', () async {
+          await updateAMember();
+
+          verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>().having((p0) => p0.id, "id", aMemberId))));
+        });
+        group('should update property', () {
+          test('phone', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>()
+                  .having((p0) => p0.phone, "phone", aMemberPhone),
+            )));
+          });
+          test('name', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>()
+                  .having((p0) => p0.name, "name", aMemberName),
+            )));
+          });
+          test('designation', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>().having(
+                  (p0) => p0.designation, "designation", aMemberDesignation),
+            )));
+          });
+          test('profileImage', () async {
+            await updateAMember();
+
+            verify(memberRepo.update(argThat(
+              isA<MemberUpdateDto>().having(
+                  (p0) => p0.profileImage, "profileImage", aMemberProfileImage),
+            )));
+          });
+        });
+      });
+    });
+    group('without auth', () {
+      setUp(() {
+        setupAuthWithoutAUser();
+      });
+      test('should throw UserNotFoundError', () {
+        expect(() async {
+          await updateAMember();
+        }, throwsA(isA<UserNotFoundError>()));
+      });
+      test('should not call repo.getCommunityMemberByUserId', () async {
+        try {
+          await updateAMember();
+        } catch (e) {}
+
+        verifyNever(memberRepo.getCommunityMemberByUserId(
+          communityId: anyNamed("communityId"),
+          userId: anyNamed("userId"),
+        ));
+      });
+      test('should not call repo.update', () async {
+        try {
+          await updateAMember();
+        } catch (e) {}
+
+        verifyNever(memberRepo.update(any));
+      });
+    });
+  });
   group('Member get', () {
     setUp(() {
       setupSut();
@@ -251,7 +467,12 @@ void main() {
             await sut.get(aCommunityId);
           }, throwsA(isA<UserNotPermitError>()));
         });
-        test('should not call repo.getMembers', () {});
+        test('should not call repo.getMembers', () async {
+          try {
+            await sut.get(aCommunityId);
+          } catch (e) {}
+          verifyNever(memberRepo.getMembers(any));
+        });
       });
     });
     group('without auth', () {
@@ -264,7 +485,12 @@ void main() {
           await sut.get(aCommunityId);
         }, throwsA(isA<UserNotFoundError>()));
       });
-      test('should not call repo.getMembers', () {});
+      test('should not call repo.getMembers', () async {
+        try {
+          await sut.get(aCommunityId);
+        } catch (e) {}
+        verifyNever(memberRepo.getMembers(any));
+      });
     });
   });
 }

@@ -1,7 +1,9 @@
 import 'package:faker/faker.dart';
+import 'package:flutter/material.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:my_community/src/core/entities/community/community.dart';
+import 'package:my_community/src/core/entities/member/member.dart';
 import 'package:my_community/src/core/entities/user/user.dart';
 import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
 import 'package:my_community/src/core/repositories/community/community_repo.dart';
@@ -42,7 +44,8 @@ final bCommunityCoverImage = facker.image.image(random: true);
 final aMemberId = facker.guid.guid();
 final aMemberName = facker.person.name();
 final aMemberPhone = facker.phoneNumber.us();
-final aMemberRole = "admin";
+final aMemberRole = MemberRole.admin;
+final aMemberDtoRole = "admin";
 final aMemberUserId = facker.guid.guid();
 final aMemberDesignation = facker.job.title();
 final aMemberProfileImage = facker.image.image(random: true);
@@ -50,7 +53,8 @@ final aMemberProfileImage = facker.image.image(random: true);
 final bMemberId = facker.guid.guid();
 final bMemberName = facker.person.name();
 final bMemberPhone = facker.phoneNumber.us();
-final bMemberRole = "member";
+final bMemberRole = MemberRole.member;
+final bMemberDtoRole = "member";
 final bMemberUserId = facker.guid.guid();
 final bMemberDesignation = facker.job.title();
 final bMemberProfileImage = facker.image.image(random: true);
@@ -84,7 +88,7 @@ final aMemberReadDto = MemberReadDto(
   phone: aMemberPhone,
   communityId: aCommunityId,
   name: aMemberName,
-  role: aMemberRole,
+  role: aMemberDtoRole,
   userId: aMemberUserId,
   designation: aMemberDesignation,
   profileImage: aMemberProfileImage,
@@ -95,10 +99,21 @@ final bMemberReadDto = MemberReadDto(
   phone: bMemberPhone,
   communityId: aCommunityId,
   name: bMemberName,
-  role: bMemberRole,
+  role: bMemberDtoRole,
   userId: bMemberUserId,
   designation: bMemberDesignation,
   profileImage: bMemberProfileImage,
+);
+
+final aMember = Member(
+  id: aMemberId,
+  phone: aMemberPhone,
+  communityId: aCommunityId,
+  name: aMemberName,
+  role: aMemberRole,
+  designation: aMemberDesignation,
+  profileImage: aMemberProfileImage,
+  userId: aUserId,
 );
 
 late MockICommunityRepo communityRepo;
@@ -134,16 +149,56 @@ void setupUserWithAdminRole() {
   );
 }
 
-void setupUserWithMemberRole() {
+void setupUserAsTheMember() {
+  final userAsTheMember = MemberReadDto(
+    id: aMemberId,
+    phone: "",
+    communityId: aCommunityId,
+    name: "",
+    role: "member",
+    userId: aUserId,
+  );
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
+    (realInvocation) async => userAsTheMember,
+  );
   when(memberRepo.getCommunityMemberByUserId(
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
-    (realInvocation) async => const MemberReadDto(
-      id: "",
+    (realInvocation) async => userAsTheMember,
+  );
+}
+
+void setupUserWithMemberRole() {
+  // when(memberRepo.getCommunityMemberByUserId(
+  //         communityId: aCommunityId, userId: aUserId))
+  //     .thenAnswer(
+  //   (realInvocation) async => MemberReadDto(
+  //     id: "",
+  //     phone: "",
+  //     communityId: "",
+  //     name: "",
+  //     role: "member",
+  //   ),
+  // );
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: aMemberId,
       phone: "",
-      communityId: "",
+      communityId: aCommunityId,
       name: "",
       role: "member",
+    ),
+  );
+  when(memberRepo.getCommunityMemberByUserId(
+          communityId: aCommunityId, userId: aUserId))
+      .thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: bMemberId,
+      phone: "",
+      communityId: aCommunityId,
+      name: "",
+      role: "member",
+      userId: aUserId,
     ),
   );
 }
@@ -163,4 +218,9 @@ void setupMemberRepoWithTwoMember() {
       bMemberReadDto,
     ],
   );
+}
+
+void setupRepoWithAMemberAndACommunity() {
+  when(memberRepo.getMember(aMemberId))
+      .thenAnswer((realInvocation) async => aMemberReadDto);
 }
