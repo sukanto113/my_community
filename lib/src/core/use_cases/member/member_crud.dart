@@ -93,8 +93,15 @@ class MemberCrud {
   }
 
   Future<void> remove(String memberId) async {
-    if ((await authRepo.getCurrentUser()) != null) {
+    final user = await authRepo.getCurrentUser();
+    if (user != null) {
       await memberRepo.remove(memberId);
+      final member = await memberRepo.getMember(memberId);
+      final userAsMember = await memberRepo.getCommunityMemberByUserId(
+          communityId: member.communityId, userId: user.id);
+      if (userAsMember != null && userAsMember.role == "member") {
+        throw UserNotPermitError();
+      }
     } else {
       throw UserNotFoundError();
     }

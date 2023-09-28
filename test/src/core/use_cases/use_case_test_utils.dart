@@ -139,12 +139,28 @@ void setupUserWithAdminRole() {
   when(memberRepo.getCommunityMemberByUserId(
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
-    (realInvocation) async => const MemberReadDto(
+    (realInvocation) async => MemberReadDto(
       id: "",
       phone: "",
-      communityId: "",
+      communityId: aCommunityId,
       name: "",
       role: "admin",
+      userId: aUserId,
+    ),
+  );
+}
+
+void setupUserWithMemberRole() {
+  when(memberRepo.getCommunityMemberByUserId(
+          communityId: aCommunityId, userId: aUserId))
+      .thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: "",
+      phone: "",
+      communityId: aCommunityId,
+      name: "",
+      role: "member",
+      userId: aUserId,
     ),
   );
 }
@@ -165,41 +181,6 @@ void setupUserAsTheMember() {
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => userAsTheMember,
-  );
-}
-
-void setupUserWithMemberRole() {
-  // when(memberRepo.getCommunityMemberByUserId(
-  //         communityId: aCommunityId, userId: aUserId))
-  //     .thenAnswer(
-  //   (realInvocation) async => MemberReadDto(
-  //     id: "",
-  //     phone: "",
-  //     communityId: "",
-  //     name: "",
-  //     role: "member",
-  //   ),
-  // );
-  when(memberRepo.getMember(aMemberId)).thenAnswer(
-    (realInvocation) async => MemberReadDto(
-      id: aMemberId,
-      phone: "",
-      communityId: aCommunityId,
-      name: "",
-      role: "member",
-    ),
-  );
-  when(memberRepo.getCommunityMemberByUserId(
-          communityId: aCommunityId, userId: aUserId))
-      .thenAnswer(
-    (realInvocation) async => MemberReadDto(
-      id: bMemberId,
-      phone: "",
-      communityId: aCommunityId,
-      name: "",
-      role: "member",
-      userId: aUserId,
-    ),
   );
 }
 
@@ -224,3 +205,12 @@ void setupRepoWithAMemberAndACommunity() {
   when(memberRepo.getMember(aMemberId))
       .thenAnswer((realInvocation) async => aMemberReadDto);
 }
+
+void setupACommunityWithAMember() {
+  when(memberRepo.getMember(aMemberId))
+      .thenAnswer((realInvocation) async => aMemberReadDto);
+}
+
+// void setupACommunityWithoutAMember() {
+//   when(memberRepo.getMember(aMemberId)).thenAnswer((realInvocation) async => null);
+// }
