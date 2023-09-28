@@ -91,4 +91,12 @@ class MemberCrud {
       profileImage: profileImage,
     ));
   }
+
+  Future<void> remove(String memberId) async {
+    if ((await authRepo.getCurrentUser()) != null) {
+      await memberRepo.remove(memberId);
+    } else {
+      throw UserNotFoundError();
+    }
+  }
 }

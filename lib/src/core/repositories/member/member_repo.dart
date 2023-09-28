@@ -11,4 +11,5 @@ abstract class IMemberRepo {
   Future<MemberReadDto?> getCommunityMemberByUserId(
       {required String communityId, required String userId});
   Future<void> update(MemberUpdateDto dto);
+  Future<void> remove(String memberId);
 }

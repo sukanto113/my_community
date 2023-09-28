@@ -493,4 +493,50 @@ void main() {
       });
     });
   });
+
+  group('Member remove', () {
+    group('with auth', () {
+      setUp(() {
+        setupAuthWithAUser();
+      });
+      group('user with admin role', () {
+        group('member with member role', () {
+          test('should remove the user', () async {
+            await sut.remove(aMemberId);
+            verify(memberRepo.remove(aMemberId)).called(1);
+          });
+        });
+
+        group('member with admin role', () {
+          group('user is the member', () {
+            test('should remove the member', () {});
+          });
+
+          group('user is not the member', () {
+            test('should throw UserNotPermitError', () {});
+
+            test('should not call repo.remove', () {});
+          });
+        });
+      });
+
+      group('user without admin role', () {
+        test('should throw UserNotPermitError', () {});
+        test('should not call repo.remove', () {});
+      });
+    });
+
+    group('without auth', () {
+      setUp(() {
+        setupAuthWithoutAUser();
+      });
+      test('should throw UserNotFoundError', () {
+        expect(() async {
+          await sut.remove(aMemberId);
+        }, throwsA(isA<UserNotFoundError>()));
+      });
+
+      test('should not call repo.remove', () {});
+    });
+  });
 }

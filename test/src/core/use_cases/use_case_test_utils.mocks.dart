@@ -168,6 +168,15 @@ class MockIMemberRepo extends _i1.Mock implements _i8.IMemberRepo {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+  @override
+  _i4.Future<void> remove(String? memberId) => (super.noSuchMethod(
+        Invocation.method(
+          #remove,
+          [memberId],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }
 
 /// A class which mocks [IAuthRepo].
