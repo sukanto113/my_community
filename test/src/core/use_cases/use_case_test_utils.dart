@@ -201,16 +201,17 @@ void setupMemberRepoWithTwoMember() {
   );
 }
 
-void setupRepoWithAMemberAndACommunity() {
-  when(memberRepo.getMember(aMemberId))
-      .thenAnswer((realInvocation) async => aMemberReadDto);
-}
+// void setupRepoWithAMemberAndACommunity() {
+//   when(memberRepo.getMember(aMemberId))
+//       .thenAnswer((realInvocation) async => aMemberReadDto);
+// }
 
 void setupACommunityWithAMember() {
   when(memberRepo.getMember(aMemberId))
       .thenAnswer((realInvocation) async => aMemberReadDto);
 }
 
-// void setupACommunityWithoutAMember() {
-//   when(memberRepo.getMember(aMemberId)).thenAnswer((realInvocation) async => null);
-// }
+void setupACommunityWithoutAMember() {
+  when(memberRepo.getMember(aMemberId))
+      .thenAnswer((realInvocation) async => null);
+}

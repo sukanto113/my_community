@@ -5,7 +5,7 @@ import 'dtos/create/member_create_dto.dart';
 import 'dtos/read/member_read_dto.dart';
 
 abstract class IMemberRepo {
-  Future<MemberReadDto> getMember(String memberId);
+  Future<MemberReadDto?> getMember(String memberId);
   Future<Iterable<MemberReadDto>> getMembers(String communityId);
   Future<String> addMember(MemberCreateDto dto);
   Future<MemberReadDto?> getCommunityMemberByUserId(
