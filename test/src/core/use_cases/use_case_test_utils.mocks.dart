@@ -120,22 +120,22 @@ class MockIMemberRepo extends _i1.Mock implements _i7.IMemberRepo {
         returnValueForMissingStub: _i3.Future<String>.value(''),
       ) as _i3.Future<String>);
   @override
-  _i3.Future<_i8.MemberReadDto?> getCommunityMemberByUserId({
+  _i3.Future<String?> getCommunityMemberIdByUserId({
     required String? communityId,
     required String? userId,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
-          #getCommunityMemberByUserId,
+          #getCommunityMemberIdByUserId,
           [],
           {
             #communityId: communityId,
             #userId: userId,
           },
         ),
-        returnValue: _i3.Future<_i8.MemberReadDto?>.value(),
-        returnValueForMissingStub: _i3.Future<_i8.MemberReadDto?>.value(),
-      ) as _i3.Future<_i8.MemberReadDto?>);
+        returnValue: _i3.Future<String?>.value(),
+        returnValueForMissingStub: _i3.Future<String?>.value(),
+      ) as _i3.Future<String?>);
   @override
   _i3.Future<void> update(_i10.MemberUpdateDto? dto) => (super.noSuchMethod(
         Invocation.method(

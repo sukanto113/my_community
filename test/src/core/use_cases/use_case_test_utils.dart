@@ -136,31 +136,35 @@ void setupCommunityRepoWithTwoCommunity() {
 }
 
 void setupUserWithAdminRole() {
-  when(memberRepo.getCommunityMemberByUserId(
-          communityId: aCommunityId, userId: aUserId))
-      .thenAnswer(
+  when(memberRepo.getCommunityMemberIdByUserId(
+    communityId: aCommunityId,
+    userId: aUserId,
+  )).thenAnswer((realInvocation) async => aMemberId);
+
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
     (realInvocation) async => MemberReadDto(
-      id: "",
+      id: aMemberId,
       phone: "",
       communityId: aCommunityId,
       name: "",
       role: "admin",
-      userId: aUserId,
     ),
   );
 }
 
 void setupUserWithMemberRole() {
-  when(memberRepo.getCommunityMemberByUserId(
-          communityId: aCommunityId, userId: aUserId))
-      .thenAnswer(
+  when(memberRepo.getCommunityMemberIdByUserId(
+    communityId: aCommunityId,
+    userId: aUserId,
+  )).thenAnswer((realInvocation) async => aMemberId);
+
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
     (realInvocation) async => MemberReadDto(
-      id: "",
+      id: aMemberId,
       phone: "",
       communityId: aCommunityId,
       name: "",
       role: "member",
-      userId: aUserId,
     ),
   );
 }
@@ -174,18 +178,18 @@ void setupUserAsTheMember() {
     role: "member",
     userId: aUserId,
   );
-  when(memberRepo.getMember(aMemberId)).thenAnswer(
-    (realInvocation) async => userAsTheMember,
-  );
-  when(memberRepo.getCommunityMemberByUserId(
+  when(memberRepo.getCommunityMemberIdByUserId(
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
+    (realInvocation) async => aMemberId,
+  );
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
     (realInvocation) async => userAsTheMember,
   );
 }
 
 void setupUserWithoutMember() {
-  when(memberRepo.getCommunityMemberByUserId(
+  when(memberRepo.getCommunityMemberIdByUserId(
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => null,
@@ -200,11 +204,6 @@ void setupMemberRepoWithTwoMember() {
     ],
   );
 }
-
-// void setupRepoWithAMemberAndACommunity() {
-//   when(memberRepo.getMember(aMemberId))
-//       .thenAnswer((realInvocation) async => aMemberReadDto);
-// }
 
 void setupACommunityWithAMember() {
   when(memberRepo.getMember(aMemberId))
@@ -227,14 +226,15 @@ setupACommunityWithAMemberWithAdminRole() {
     ),
   );
 }
-setupACommunityWithAMemberWithMemberRole() {
-  when(memberRepo.getMember(aMemberId)).thenAnswer(
-    (realInvocation) async => MemberReadDto(
-      id: aMemberId,
-      phone: "",
-      communityId: aCommunityId,
-      name: "",
-      role: "member",
-    ),
-  );
-}
+
+// setupACommunityWithAMemberWithMemberRole() {
+//   when(memberRepo.getMember(aMemberId)).thenAnswer(
+//     (realInvocation) async => MemberReadDto(
+//       id: aMemberId,
+//       phone: "",
+//       communityId: aCommunityId,
+//       name: "",
+//       role: "member",
+//     ),
+//   );
+// }

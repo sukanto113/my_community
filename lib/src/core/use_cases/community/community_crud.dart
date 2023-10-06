@@ -6,6 +6,8 @@ import '../../repositories/community/dtos/create/community_create_dot.dart';
 import '../../repositories/community/dtos/update/community_update_dto.dart';
 import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
+import '../../repositories/member/member_repo_extension.dart';
+import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart';
 
 class CommunityCrud {
   CommunityCrud({
@@ -40,12 +42,13 @@ class CommunityCrud {
     final user = await authRepo.getCurrentUser();
     if (user == null) throw UserNotFoundError();
 
-    final member = await memberRepo.getCommunityMemberByUserId(
+    MemberReadDto? userAsMember = await memberRepo.getUserAsMember(
       communityId: community.id,
       userId: user.id,
     );
-    if (member == null) throw UserNotPermitError();
-    if (member.role == "member") throw UserNotPermitError();
+
+    if (userAsMember == null) throw MemberNotFoundError();
+    if (userAsMember.role == "member") throw UserNotPermitError();
 
     await communityRepo.update(CommunityUpdateDTO(
       id: community.id,
@@ -74,12 +77,12 @@ class CommunityCrud {
     final user = await authRepo.getCurrentUser();
     if (user == null) throw UserNotFoundError();
 
-    final member = await memberRepo.getCommunityMemberByUserId(
+    final userAsMember = await memberRepo.getUserAsMember(
       communityId: communityId,
       userId: user.id,
     );
-    if (member == null) throw UserNotPermitError();
-    if (member.role == "member") throw UserNotPermitError();
+    if (userAsMember == null) throw MemberNotFoundError();
+    if (userAsMember.role == "member") throw UserNotPermitError();
 
     await communityRepo.archive(communityId);
   }

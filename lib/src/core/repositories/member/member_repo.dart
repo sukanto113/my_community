@@ -8,7 +8,7 @@ abstract class IMemberRepo {
   Future<MemberReadDto?> getMember(String memberId);
   Future<Iterable<MemberReadDto>> getMembers(String communityId);
   Future<String> addMember(MemberCreateDto dto);
-  Future<MemberReadDto?> getCommunityMemberByUserId(
+  Future<String?> getCommunityMemberIdByUserId(
       {required String communityId, required String userId});
   Future<void> update(MemberUpdateDto dto);
   Future<void> remove(String memberId);

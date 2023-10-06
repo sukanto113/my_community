@@ -357,7 +357,7 @@ void main() {
         } catch (e) {}
 
         verify(
-          memberRepo.getCommunityMemberByUserId(
+          memberRepo.getCommunityMemberIdByUserId(
             communityId: anyNamed("communityId"),
             userId: anyNamed("userId"),
           ),

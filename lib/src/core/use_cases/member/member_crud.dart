@@ -1,4 +1,5 @@
 import 'package:my_community/src/core/repositories/member/dtos/update/member_update_dto.dart';
+import 'package:my_community/src/core/repositories/member/member_repo_extension.dart';
 
 import '../../entities/member/member.dart';
 import '../../repositories/auth/auth_repo.dart';
@@ -19,13 +20,17 @@ class MemberCrud {
     final user = await authRepo.getCurrentUser();
     if (user == null) throw UserNotFoundError();
 
-    final member = await memberRepo.getCommunityMemberByUserId(
+    // final userAsMember = await memberRepo.getCommunityMemberByUserId(
+    //   communityId: communityId,
+    //   userId: user.id,
+    // );
+    final userAsMember = await memberRepo.getUserAsMember(
       communityId: communityId,
       userId: user.id,
     );
 
-    if (member == null) throw UserNotPermitError();
-    if (member.role == "member") throw UserNotPermitError();
+    if (userAsMember == null) throw UserNotPermitError();
+    if (userAsMember.role == "member") throw UserNotPermitError();
 
     await memberRepo.addMember(
       MemberCreateDto(
@@ -41,7 +46,7 @@ class MemberCrud {
     final user = await authRepo.getCurrentUser();
     if (user == null) throw UserNotFoundError();
 
-    final member = await memberRepo.getCommunityMemberByUserId(
+    final member = await memberRepo.getUserAsMember(
       communityId: communityId,
       userId: user.id,
     );
@@ -77,7 +82,7 @@ class MemberCrud {
     final member = await memberRepo.getMember(id);
     if (member == null) throw MemberNotFoundError();
 
-    final userAsMember = await memberRepo.getCommunityMemberByUserId(
+    final userAsMember = await memberRepo.getUserAsMember(
       communityId: member.communityId,
       userId: user.id,
     );
@@ -101,7 +106,7 @@ class MemberCrud {
       if (member == null) throw MemberNotFoundError();
 
       await memberRepo.remove(memberId);
-      final userAsMember = await memberRepo.getCommunityMemberByUserId(
+      final userAsMember = await memberRepo.getUserAsMember(
           communityId: member.communityId, userId: user.id);
       if (userAsMember != null && userAsMember.role == "member") {
         throw UserNotPermitError();
