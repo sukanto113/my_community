@@ -105,12 +105,18 @@ class MemberCrud {
       final member = await memberRepo.getMember(memberId);
       if (member == null) throw MemberNotFoundError();
 
-      await memberRepo.remove(memberId);
       final userAsMember = await memberRepo.getUserAsMember(
           communityId: member.communityId, userId: user.id);
-      if (userAsMember != null && userAsMember.role == "member") {
+      if (userAsMember == null) {
         throw UserNotPermitError();
       }
+      if (userAsMember.role == "member") {
+        throw UserNotPermitError();
+      }
+      if (member.role == "admin" && member.id != userAsMember.id) {
+        throw UserNotPermitError();
+      }
+      await memberRepo.remove(memberId);
     } else {
       throw UserNotFoundError();
     }

@@ -21,6 +21,7 @@ import 'use_case_test_utils.mocks.dart';
 final facker = Faker();
 
 final aUserId = facker.randomGenerator.integer(1000).toString();
+final aUserAsMemberId = facker.randomGenerator.integer(1000).toString();
 final aUserPhone = facker.phoneNumber.us();
 final aUserName = facker.person.name();
 
@@ -139,11 +140,11 @@ void setupUserWithAdminRole() {
   when(memberRepo.getCommunityMemberIdByUserId(
     communityId: aCommunityId,
     userId: aUserId,
-  )).thenAnswer((realInvocation) async => aMemberId);
+  )).thenAnswer((realInvocation) async => aUserAsMemberId);
 
-  when(memberRepo.getMember(aMemberId)).thenAnswer(
+  when(memberRepo.getMember(aUserAsMemberId)).thenAnswer(
     (realInvocation) async => MemberReadDto(
-      id: aMemberId,
+      id: aUserAsMemberId,
       phone: "",
       communityId: aCommunityId,
       name: "",
@@ -156,11 +157,11 @@ void setupUserWithMemberRole() {
   when(memberRepo.getCommunityMemberIdByUserId(
     communityId: aCommunityId,
     userId: aUserId,
-  )).thenAnswer((realInvocation) async => aMemberId);
+  )).thenAnswer((realInvocation) async => aUserAsMemberId);
 
-  when(memberRepo.getMember(aMemberId)).thenAnswer(
+  when(memberRepo.getMember(aUserAsMemberId)).thenAnswer(
     (realInvocation) async => MemberReadDto(
-      id: aMemberId,
+      id: aUserAsMemberId,
       phone: "",
       communityId: aCommunityId,
       name: "",
@@ -170,28 +171,18 @@ void setupUserWithMemberRole() {
 }
 
 void setupUserAsTheMember() {
-  final userAsTheMember = MemberReadDto(
-    id: aMemberId,
-    phone: "",
-    communityId: aCommunityId,
-    name: "",
-    role: "member",
-    userId: aUserId,
-  );
   when(memberRepo.getCommunityMemberIdByUserId(
           communityId: aCommunityId, userId: aUserId))
       .thenAnswer(
     (realInvocation) async => aMemberId,
   );
-  when(memberRepo.getMember(aMemberId)).thenAnswer(
-    (realInvocation) async => userAsTheMember,
-  );
 }
 
 void setupUserWithoutMember() {
   when(memberRepo.getCommunityMemberIdByUserId(
-          communityId: aCommunityId, userId: aUserId))
-      .thenAnswer(
+    communityId: aCommunityId,
+    userId: aUserId,
+  )).thenAnswer(
     (realInvocation) async => null,
   );
 }
@@ -215,7 +206,7 @@ void setupACommunityWithoutAMember() {
       .thenAnswer((realInvocation) async => null);
 }
 
-setupACommunityWithAMemberWithAdminRole() {
+setupMemberWithAdminRole() {
   when(memberRepo.getMember(aMemberId)).thenAnswer(
     (realInvocation) async => MemberReadDto(
       id: aMemberId,
@@ -227,14 +218,14 @@ setupACommunityWithAMemberWithAdminRole() {
   );
 }
 
-// setupACommunityWithAMemberWithMemberRole() {
-//   when(memberRepo.getMember(aMemberId)).thenAnswer(
-//     (realInvocation) async => MemberReadDto(
-//       id: aMemberId,
-//       phone: "",
-//       communityId: aCommunityId,
-//       name: "",
-//       role: "member",
-//     ),
-//   );
-// }
+setupMemberWithMemberRole() {
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: aMemberId,
+      phone: "",
+      communityId: aCommunityId,
+      name: "",
+      role: "member",
+    ),
+  );
+}

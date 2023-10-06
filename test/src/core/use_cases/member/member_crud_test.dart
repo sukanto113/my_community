@@ -188,6 +188,9 @@ void main() {
       group('community with A member', () {
         setUp(() => setupACommunityWithAMember());
         group('when user is not member', () {
+          setUp(() {
+            setupUserWithoutMember();
+          });
           test('should not call repo.update', () async {
             try {
               await updateAMember();
@@ -532,30 +535,42 @@ void main() {
 
           group('member with member role', () {
             setUp(() {
-              // setupACommunityWithAMemberWithMemberRole();
+              setupMemberWithMemberRole();
             });
 
-            // test('should remove the user', () async {
-            //   await sut.remove(aMemberId);
-            //   verify(memberRepo.remove(aMemberId)).called(1);
-            // });
+            test('should remove the user', () async {
+              await sut.remove(aMemberId);
+              verify(memberRepo.remove(aMemberId)).called(1);
+            });
           });
 
           group('member with admin role', () {
             setUp(() {
-              setupACommunityWithAMemberWithAdminRole();
+              setupMemberWithAdminRole();
             });
             group('user is the member', () {
-              // setUp(() {
-              //   setupUserAsTheMember();
-              // });
-              test('should remove the member', () {});
+              setUp(() {
+                setupUserAsTheMember();
+              });
+              test('should remove the member', () async {
+                await sut.remove(aMemberId);
+                verify(memberRepo.remove(aMemberId)).called(1);
+              });
             });
 
             group('user is not the member', () {
-              test('should throw UserNotPermitError', () {});
+              test('should throw UserNotPermitError', () {
+                expect(() async {
+                  await sut.remove(aMemberId);
+                }, throwsA(isA<UserNotPermitError>()));
+              });
 
-              test('should not call repo.remove', () {});
+              test('should not call repo.remove', () async {
+                try {
+                  await sut.remove(aMemberId);
+                } catch (e) {}
+                verifyNever(memberRepo.remove(aMemberId));
+              });
             });
           });
         });
@@ -569,7 +584,12 @@ void main() {
               await sut.remove(aMemberId);
             }, throwsA(isA<UserNotPermitError>()));
           });
-          test('should not call repo.remove', () {});
+          test('should not call repo.remove', () async {
+            try {
+              await sut.remove(aMemberId);
+            } catch (e) {}
+            verifyNever(memberRepo.remove(any));
+          });
         });
       });
 
