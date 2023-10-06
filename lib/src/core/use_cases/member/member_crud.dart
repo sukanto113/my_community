@@ -20,10 +20,6 @@ class MemberCrud {
     final user = await authRepo.getCurrentUser();
     if (user == null) throw UserNotFoundError();
 
-    // final userAsMember = await memberRepo.getCommunityMemberByUserId(
-    //   communityId: communityId,
-    //   userId: user.id,
-    // );
     final userAsMember = await memberRepo.getUserAsMember(
       communityId: communityId,
       userId: user.id,
@@ -87,7 +83,7 @@ class MemberCrud {
       userId: user.id,
     );
     if (userAsMember == null) throw UserNotPermitError();
-    if (userAsMember.role != "admin" && member.userId != user.id) {
+    if (userAsMember.role != "admin" && member.id != userAsMember.id) {
       throw UserNotPermitError();
     }
     await memberRepo.update(MemberUpdateDto(

@@ -1,5 +1,4 @@
 import 'package:faker/faker.dart';
-import 'package:flutter/material.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:my_community/src/core/entities/community/community.dart';
@@ -197,13 +196,15 @@ void setupMemberRepoWithTwoMember() {
 }
 
 void setupACommunityWithAMember() {
-  when(memberRepo.getMember(aMemberId))
-      .thenAnswer((realInvocation) async => aMemberReadDto);
-}
-
-void setupACommunityWithoutAMember() {
-  when(memberRepo.getMember(aMemberId))
-      .thenAnswer((realInvocation) async => null);
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: aMemberId,
+      phone: "",
+      communityId: aCommunityId,
+      name: "",
+      role: "",
+    ),
+  );
 }
 
 setupMemberWithAdminRole() {
@@ -228,4 +229,9 @@ setupMemberWithMemberRole() {
       role: "member",
     ),
   );
+}
+
+void setupACommunityWithoutAMember() {
+  when(memberRepo.getMember(aMemberId))
+      .thenAnswer((realInvocation) async => null);
 }
