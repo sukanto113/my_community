@@ -531,7 +531,9 @@ void main() {
           });
 
           group('member with member role', () {
-            // setUp(() {setupco})
+            setUp(() {
+              setupACommunityWithAMemberWithMemberRole();
+            });
 
             test('should remove the user', () async {
               await sut.remove(aMemberId);
@@ -540,7 +542,13 @@ void main() {
           });
 
           group('member with admin role', () {
+            setUp(() {
+              setupACommunityWithAMemberWithAdminRole();
+            });
             group('user is the member', () {
+              // setUp(() {
+              //   setupUserAsTheMember();
+              // });
               test('should remove the member', () {});
             });
 

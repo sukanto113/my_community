@@ -215,3 +215,26 @@ void setupACommunityWithoutAMember() {
   when(memberRepo.getMember(aMemberId))
       .thenAnswer((realInvocation) async => null);
 }
+
+setupACommunityWithAMemberWithAdminRole() {
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: aMemberId,
+      phone: "",
+      communityId: aCommunityId,
+      name: "",
+      role: "admin",
+    ),
+  );
+}
+setupACommunityWithAMemberWithMemberRole() {
+  when(memberRepo.getMember(aMemberId)).thenAnswer(
+    (realInvocation) async => MemberReadDto(
+      id: aMemberId,
+      phone: "",
+      communityId: aCommunityId,
+      name: "",
+      role: "member",
+    ),
+  );
+}
