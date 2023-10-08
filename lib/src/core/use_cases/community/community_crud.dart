@@ -9,6 +9,8 @@ import '../../repositories/member/member_repo.dart';
 import '../../repositories/member/member_repo_extension.dart';
 import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart';
 
+import '../../utils/errors.dart';
+
 class CommunityCrud {
   CommunityCrud({
     required this.communityRepo,

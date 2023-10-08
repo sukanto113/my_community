@@ -1,5 +1,5 @@
 
-import '../auth/auth_repo.dart';
+import '../../utils/errors.dart';
 import 'dtos/read/member_read_dto.dart';
 import 'member_repo.dart';
 

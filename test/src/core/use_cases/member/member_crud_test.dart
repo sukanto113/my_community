@@ -1,11 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:my_community/src/core/entities/member/member.dart';
-import 'package:my_community/src/core/repositories/auth/auth_repo.dart';
 import 'package:my_community/src/core/repositories/member/dtos/create/member_create_dto.dart';
-import 'package:my_community/src/core/repositories/member/dtos/read/member_read_dto.dart';
 import 'package:my_community/src/core/repositories/member/dtos/update/member_update_dto.dart';
 import 'package:my_community/src/core/use_cases/member/member_crud.dart';
+import 'package:my_community/src/core/utils/errors.dart';
 
 import '../use_case_test_utils.dart';
 import '../use_case_test_utils.mocks.dart';

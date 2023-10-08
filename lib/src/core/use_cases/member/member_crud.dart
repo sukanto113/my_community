@@ -5,6 +5,7 @@ import '../../entities/member/member.dart';
 import '../../repositories/auth/auth_repo.dart';
 import '../../repositories/member/dtos/create/member_create_dto.dart';
 import '../../repositories/member/member_repo.dart';
+import '../../utils/errors.dart';
 
 class MemberCrud {
   MemberCrud({required this.authRepo, required this.memberRepo});
